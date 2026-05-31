@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>❤️ 臻爱婚礼 · 云端同步抽奖系统 ❤️</title>
-    <!-- 引入 Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <!-- Firebase SDK (模块化风格，使用兼容CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
         * {
             margin: 0;
@@ -86,18 +86,6 @@
         @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.18); }
-        }
-
-        .sync-status {
-            display: inline-block;
-            background: #e2c7ce55;
-            border-radius: 50px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            margin-left: 12px;
-            color: #b34e67;
-            vertical-align: middle;
-            backdrop-filter: blur(2px);
         }
 
         .lottery-card {
@@ -359,6 +347,15 @@
             font-size: 0.75rem;
             color: #cd8b9b;
         }
+        .sync-status {
+            display: inline-block;
+            margin-left: 12px;
+            font-size: 0.7rem;
+            background: #e9d0d7;
+            padding: 4px 12px;
+            border-radius: 40px;
+            color: #a13e56;
+        }
         @media (max-width: 900px) {
             .info-panels {
                 flex-direction: column;
@@ -444,18 +441,18 @@
 <body>
 <div class="wedding-container">
     <div class="title-section">
-        <h1>✨ 挚爱·锦鲤抽奖 ✨ <span class="sync-status" id="syncBadge">☁️ 实时同步已开启</span></h1>
+        <h1>✨ 挚爱·锦鲤抽奖 ✨<span class="sync-status" id="syncStatusTag">☁️ 云端同步中</span></h1>
         <div class="sub">
             <span class="heart-icon">❤️</span> 新郎 陈顺强 & 新娘 李建 敬谢来宾 <span class="heart-icon">❤️</span>
         </div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color:#e28ca3;">—— 多设备云端同步 · 数据实时共享 ——</div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color:#e28ca3;">—— 跨设备实时同步 · 全自动云端存储 ——</div>
     </div>
 
     <div class="lottery-card">
         <div class="draw-area">
             <div class="draw-name-box">
                 <div class="draw-label">🎁 幸运之星滚动显示 🎁</div>
-                <div class="rolling-name" id="rollingName">💖 点击抽取 💖</div>
+                <div class="rolling-name" id="rollingName">💖 加载云端数据中 💖</div>
             </div>
             <div class="button-group">
                 <button class="btn btn-primary" id="drawTopBtn">👑 特等奖 👑</button>
@@ -476,7 +473,7 @@
                 <span class="badge-count" id="remainCount">0</span>
             </h3>
             <div class="guest-list" id="guestListContainer">
-                <div class="empty-tip">暂无来宾，请点击“添加入场来宾”</div>
+                <div class="empty-tip">✨ 加载中 ✨</div>
             </div>
         </div>
 
@@ -511,38 +508,43 @@
         <span>🌸 三等奖：高端喜糖礼篮</span>
         <span>🍬 幸运奖：定制伴手礼套装</span>
     </div>
-    <footer>💒 每位宾客仅可中奖一次 · 数据云端同步，多设备实时共享 💒</footer>
+    <footer>💒 每位宾客仅可中奖一次 · 数据全设备实时同步 · 云端存储永久保留 💒</footer>
 </div>
 
 <script>
-    // -----------------------------  Firebase 配置区域  ----------------------------------
-    // 【重要】请替换为您的 Firebase 项目配置（从 Firebase 控制台获取）
-    // 步骤：1. 创建项目 -> 2. 添加 Web 应用 -> 3. 复制 firebaseConfig 并粘贴到下方
-    // 4. 在 Realtime Database 中创建数据库，并设置安全规则 { "rules": { ".read": true, ".write": true } }（开发测试用）
+    // --------------------------------------------------------------
+    //  🔥 Firebase 配置 (请替换为您自己的Firebase项目配置)
+    //  使用教程:
+    //  1. 登录 https://console.firebase.google.com/ 创建项目
+    //  2. 添加Web应用，复制配置对象
+    //  3. 启用“实时数据库”(Realtime Database)，选择“测试模式”(允许读写)
+    //  4. 将下方 firebaseConfig 替换为您自己的配置
+    // --------------------------------------------------------------
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",            // 请替换
-        authDomain: "YOUR_AUTH_DOMAIN",    // 请替换
-        databaseURL: "YOUR_DATABASE_URL",  // 请替换，例如 https://xxxx.firebaseio.com
-        projectId: "YOUR_PROJECT_ID",      // 请替换
-        storageBucket: "YOUR_BUCKET",      // 可选
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+  	apiKey: "AIzaSyCTD7c_G3mErpYUjlLDYNl1PJVj8TCV04g",
+  	authDomain: "myweddinglottery.firebaseapp.com",
+  	databaseURL: "https://myweddinglottery-default-rtdb.firebaseio.com",
+  	projectId: "myweddinglottery",
+ 	storageBucket: "myweddinglottery.firebasestorage.app",
+  	messagingSenderId: "685782459832",
+  	appId: "1:685782459832:web:6c6ed8b6fe806be5419b4d",
+  	measurementId: "G-M5MEQVKLDS"
     };
-    // 注意：为了正常运行，您需要先在 Firebase 控制台启用 Realtime Database，并将上述配置换成真实值。
-    // 如果未配置正确，本系统将降级为仅本地缓存模式并提示错误。但为了方便演示，下方会检测，若未配置则弹窗警告。
-    // ---------------------------------------------------------------------------------
+    // 说明: 为了方便演示，以上为占位配置，实际部署前请替换成您自己Firebase项目的真实配置！！
+    // 如果未正确配置，页面会提示错误并降级为本地单机模式(不会跨设备同步)，请务必按注释完成配置。
 
-    let db = null;
-    let databaseRef = null;
+    let database = null;
+    let dbRef = null;
+    let isFirebaseReady = false;
     let syncEnabled = false;
 
-    // 全局数据状态
-    let currentGuests = [];          // 未中奖宾客池
+    // 全局数据
+    let currentGuests = [];          // 未中奖池
     let winners = {
         top: [], first: [], second: [], third: [], luck: []
     };
 
-    // 抽奖动画相关
+    // 抽奖动画状态
     let isRolling = false;
     let rollInterval = null;
     let rollCount = 0;
@@ -571,7 +573,7 @@
     const secondCountSpan = document.getElementById('secondCount');
     const thirdCountSpan = document.getElementById('thirdCount');
     const luckCountSpan = document.getElementById('luckCount');
-    const syncBadge = document.getElementById('syncBadge');
+    const syncStatusTag = document.getElementById('syncStatusTag');
 
     // 辅助函数
     function escapeHtml(str) {
@@ -584,289 +586,199 @@
         });
     }
 
-    // 渲染所有UI (基于当前内存数据)
+    // 渲染全部UI (基于内存数据)
     function renderAll() {
-        // 剩余宾客列表（带删除按钮）
+        // 候奖池渲染
         if (currentGuests.length === 0) {
             guestListContainer.innerHTML = '<div class="empty-tip">🌸 候奖池暂无来宾，请点击“添加入场来宾” 🌸</div>';
         } else {
-            const guestHtml = currentGuests.map(guest => `
-                <div class="guest-item" data-guest-name="${escapeHtml(guest)}">
+            guestListContainer.innerHTML = currentGuests.map(guest => `
+                <div class="guest-item">
                     <div class="guest-name">${escapeHtml(guest)}</div>
                     <button class="delete-guest-btn" data-name="${escapeHtml(guest)}">✖ 删除</button>
                 </div>
             `).join('');
-            guestListContainer.innerHTML = guestHtml;
         }
         remainCountSpan.innerText = currentGuests.length;
 
-        // 各奖项渲染
-        const renderAward = (listEl, winnersArr, emptyMsg) => {
-            if (winnersArr.length === 0) listEl.innerHTML = `<div class="empty-tip">${emptyMsg}</div>`;
-            else listEl.innerHTML = winnersArr.map(w => `<div class="winner-item">🎉 ${escapeHtml(w)} 🎉</div>`).join('');
+        // 奖项渲染
+        const renderAward = (listEl, arr, emptyMsg) => {
+            if (arr.length === 0) listEl.innerHTML = `<div class="empty-tip">${emptyMsg}</div>`;
+            else listEl.innerHTML = arr.map(w => `<div class="winner-item">🎉 ${escapeHtml(w)} 🎉</div>`).join('');
         };
         renderAward(topWinnerList, winners.top, '✨ 暂无特等奖得主 ✨');
         renderAward(firstWinnerList, winners.first, '✨ 暂无一等奖得主 ✨');
         renderAward(secondWinnerList, winners.second, '✨ 暂无二等奖得主 ✨');
         renderAward(thirdWinnerList, winners.third, '✨ 暂无三等奖得主 ✨');
         renderAward(luckWinnerList, winners.luck, '✨ 暂无幸运奖得主 ✨');
-
+        
         topCountSpan.innerText = winners.top.length;
         firstCountSpan.innerText = winners.first.length;
         secondCountSpan.innerText = winners.second.length;
         thirdCountSpan.innerText = winners.third.length;
         luckCountSpan.innerText = winners.luck.length;
 
+        // 控制抽奖按钮可用性
         const hasGuests = currentGuests.length > 0;
-        if (!hasGuests && !isRolling) {
+        if (!isRolling) {
+            drawTopBtn.disabled = !hasGuests;
+            drawFirstBtn.disabled = !hasGuests;
+            drawSecondBtn.disabled = !hasGuests;
+            drawThirdBtn.disabled = !hasGuests;
+            drawLuckBtn.disabled = !hasGuests;
+        } else {
             drawTopBtn.disabled = true;
             drawFirstBtn.disabled = true;
             drawSecondBtn.disabled = true;
             drawThirdBtn.disabled = true;
             drawLuckBtn.disabled = true;
-        } else if (hasGuests && !isRolling) {
-            drawTopBtn.disabled = false;
-            drawFirstBtn.disabled = false;
-            drawSecondBtn.disabled = false;
-            drawThirdBtn.disabled = false;
-            drawLuckBtn.disabled = false;
         }
     }
 
-    // 将当前完整数据推送到 Firebase（云端）
-    function syncToCloud() {
-        if (!syncEnabled || !databaseRef) return;
-        const payload = {
-            guests: currentGuests,
-            winners: winners,
-            lastUpdated: Date.now()
-        };
-        databaseRef.set(payload).catch(err => {
-            console.warn("云端同步失败", err);
-            syncBadge.innerText = '⚠️ 同步异常';
-            setTimeout(() => { if(syncEnabled) syncBadge.innerText = '☁️ 实时同步'; }, 2000);
+    // 将完整状态推送到Firebase (仅当同步开启时)
+    function pushToCloud() {
+        if (!syncEnabled || !dbRef) return;
+        const fullData = { currentGuests, winners };
+        dbRef.set(fullData).catch(err => {
+            console.warn("云端写入失败", err);
+            syncStatusTag.innerText = "⚠️ 同步异常";
+            setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000);
         });
     }
 
-    // 从云端数据更新本地内存，并刷新界面 (由监听触发，不二次上传)
-    function applyCloudData(data) {
-        if (!data) return false;
-        let changed = false;
-        if (data.guests && Array.isArray(data.guests)) {
-            if (JSON.stringify(currentGuests) !== JSON.stringify(data.guests)) {
-                currentGuests = [...data.guests];
-                changed = true;
-            }
-        }
-        if (data.winners && typeof data.winners === 'object') {
-            const newWinners = {
-                top: data.winners.top || [],
-                first: data.winners.first || [],
-                second: data.winners.second || [],
-                third: data.winners.third || [],
-                luck: data.winners.luck || []
-            };
-            if (JSON.stringify(winners) !== JSON.stringify(newWinners)) {
-                winners = newWinners;
-                changed = true;
-            }
-        }
-        if (changed) {
-            renderAll();
-        }
-        return changed;
-    }
-
-    // 初始化 Firebase 监听
-    function initFirebaseSync() {
-        // 检查配置是否有效（简单判断 databaseURL 是否还是占位符）
-        if (!firebaseConfig.databaseURL || firebaseConfig.databaseURL === "YOUR_DATABASE_URL") {
-            console.warn("Firebase 未配置正确的 databaseURL，将降级为仅本地存储模式，不同设备无法同步。");
-            syncBadge.innerText = '⚠️ 未配置云端';
-            syncEnabled = false;
-            // 降级使用 localStorage 仍然可用（但不同设备不同步，仅单机）
-            loadFromLocalStorageFallback();
-            return;
-        }
-        try {
-            const app = firebase.initializeApp(firebaseConfig);
-            db = firebase.database(app);
-            databaseRef = db.ref('/weddingLottery');
-            syncEnabled = true;
-            syncBadge.innerText = '☁️ 云端同步中';
-
-            // 首次加载：读取云端数据
-            databaseRef.once('value', (snapshot) => {
-                const cloudData = snapshot.val();
-                if (cloudData && (cloudData.guests || cloudData.winners)) {
-                    applyCloudData(cloudData);
-                    // 如果已有云端数据，直接使用，不再初始化默认弹窗
-                } else {
-                    // 云端无数据，尝试从 localStorage 迁移旧数据（如果存在）
-                    const localData = localStorage.getItem('wedding_lottery_data');
-                    if (localData) {
-                        try {
-                            const parsed = JSON.parse(localData);
-                            if (parsed.currentGuests && Array.isArray(parsed.currentGuests)) currentGuests = parsed.currentGuests;
-                            if (parsed.winners) winners = { top: [], first: [], second: [], third: [], luck: [], ...parsed.winners };
-                            syncToCloud();
-                            renderAll();
-                        } catch(e) {}
-                    } else {
-                        // 全新场景：弹出添加第一位来宾
-                        if (currentGuests.length === 0 && winners.top.length===0 && winners.first.length===0 && winners.second.length===0 && winners.third.length===0 && winners.luck.length===0) {
-                            showGuestInputDialog("🎉 欢迎参加婚礼抽奖 🎉\n请输入您的姓名", (name) => {
-                                if (name) addGuestToCloud(name);
-                            });
-                        }
-                    }
-                }
-                renderAll();
-                // 实时监听远程变化
-                databaseRef.on('value', (snapshot) => {
-                    const newData = snapshot.val();
-                    if (newData) {
-                        // 避免在动画抽奖过程中被远程数据突然覆盖而导致错乱 (但只更新数据，不中断动画)
-                        const wasRolling = isRolling;
-                        applyCloudData(newData);
-                        // 如果正在抽奖且远程数据导致当前的 pendingWinner 不在池中，但继续动画结束时会校验
-                        if (wasRolling && pendingWinner && !currentGuests.includes(pendingWinner)) {
-                            // 中奖者已被其他设备抽走，动画结束时会提示无效，安全
-                        }
-                    }
-                });
-            });
-        } catch (err) {
-            console.error("Firebase 初始化失败", err);
-            syncEnabled = false;
-            syncBadge.innerText = '⚠️ 离线模式';
-            loadFromLocalStorageFallback();
-        }
-    }
-
-    // 降级方案：localStorage（单机）
-    function loadFromLocalStorageFallback() {
-        const raw = localStorage.getItem('wedding_lottery_data');
-        if (raw) {
-            try {
-                const data = JSON.parse(raw);
-                if (data.currentGuests) currentGuests = data.currentGuests;
-                if (data.winners) winners = { top:[], first:[], second:[], third:[], luck:[], ...data.winners };
-            } catch(e) {}
-        }
-        if (currentGuests.length === 0 && winners.top.length===0 && winners.first.length===0 && winners.second.length===0 && winners.third.length===0 && winners.luck.length===0) {
-            showGuestInputDialog("🎉 欢迎参加婚礼抽奖 🎉\n请输入您的姓名", (name) => {
-                if (name) addGuestToCloud(name);
-            });
-        }
-        renderAll();
-        // 如果是降级模式，仍保留 localStorage 存储变化
-        window.saveLocalFallback = function() {
-            localStorage.setItem('wedding_lottery_data', JSON.stringify({ currentGuests, winners }));
-        };
-    }
-
-    // 统一修改数据并同步（本地+云端）
-    function commitDataUpdate(newGuests, newWinners) {
-        currentGuests = [...newGuests];
-        winners = {
-            top: [...newWinners.top], first: [...newWinners.first], second: [...newWinners.second],
-            third: [...newWinners.third], luck: [...newWinners.luck]
-        };
-        renderAll();
-        if (syncEnabled && databaseRef) {
-            syncToCloud();
-        } else {
-            if (window.saveLocalFallback) window.saveLocalFallback();
-            else localStorage.setItem('wedding_lottery_data', JSON.stringify({ currentGuests, winners }));
-        }
-    }
-
-    // 添加来宾（云端同步版）
-    function addGuestToCloud(guestName) {
-        if (!guestName || guestName.trim() === "") {
-            alert("请输入有效姓名～");
-            return false;
-        }
-        const name = guestName.trim();
-        const allWinners = [...winners.top, ...winners.first, ...winners.second, ...winners.third, ...winners.luck];
-        if (currentGuests.includes(name) || allWinners.includes(name)) {
-            alert(`宾客 "${name}" 已经在中奖名单或候奖池中，不可重复添加。`);
-            return false;
-        }
-        const newGuests = [...currentGuests, name];
-        commitDataUpdate(newGuests, winners);
-        return true;
-    }
-
-    function removeGuestFromCloud(guestName) {
+    // 中断当前抽奖动画 (当远程数据更新时)
+    function abortRollingIfNeeded(reason = "云端数据更新") {
         if (isRolling) {
-            alert("抽奖动画进行中，请稍后再删除来宾～");
+            if (rollInterval) {
+                clearInterval(rollInterval);
+                rollInterval = null;
+            }
+            isRolling = false;
+            rollingNameDiv.innerHTML = `🔄 ${reason}，抽奖已取消，请重新抽取 🔄`;
+            setTimeout(() => {
+                if (!isRolling && rollingNameDiv.innerHTML.includes("重新抽取")) {
+                    rollingNameDiv.innerHTML = "💖 点击抽取 💖";
+                }
+            }, 1500);
+            pendingWinner = null;
+            pendingAward = null;
+            renderAll();  // 刷新按钮状态
+        }
+    }
+
+    // 监听云端变化 (核心同步)
+    function startCloudSync() {
+        if (!dbRef) return;
+        dbRef.on('value', (snapshot) => {
+            const cloudData = snapshot.val();
+            if (!cloudData) {
+                // 云端无数据，初始化为空 (但保留当前内存，不覆盖, 如果内存也有数据则上传)
+                if (currentGuests.length === 0 && Object.values(winners).every(arr => arr.length === 0)) {
+                    // 首次完全空，不做改变
+                } else {
+                    // 本地有数据，将本地上传至云端
+                    pushToCloud();
+                }
+                return;
+            }
+            // 云端有数据，比较是否与本地一致 (避免回环)
+            const newGuests = cloudData.currentGuests || [];
+            const newWinners = cloudData.winners || { top: [], first: [], second: [], third: [], luck: [] };
+            const isEqual = (JSON.stringify(currentGuests) === JSON.stringify(newGuests) &&
+                             JSON.stringify(winners) === JSON.stringify(newWinners));
+            if (!isEqual) {
+                // 云端数据与本地不同，进行同步 (且如果正在抽奖则中断)
+                abortRollingIfNeeded("🎈 其他设备更新了名单");
+                currentGuests = [...newGuests];
+                winners = {
+                    top: newWinners.top || [],
+                    first: newWinners.first || [],
+                    second: newWinners.second || [],
+                    third: newWinners.third || [],
+                    luck: newWinners.luck || []
+                };
+                renderAll();
+                rollingNameDiv.innerHTML = "💖 已同步最新数据 💖";
+                setTimeout(() => {
+                    if (!isRolling && rollingNameDiv.innerHTML === "💖 已同步最新数据 💖") {
+                        rollingNameDiv.innerHTML = "💖 点击抽取 💖";
+                    }
+                }, 1500);
+            }
+        }, (error) => {
+            console.error("监听失败", error);
+            syncStatusTag.innerText = "⚠️ 离线模式";
+            syncEnabled = false;
+        });
+    }
+
+    // 修改数据后统一调用: 更新内存+推送到云+渲染
+    function applyDataChange(updateFn) {
+        if (isRolling) {
+            alert("抽奖进行中，请稍后操作～");
             return false;
         }
-        const idx = currentGuests.indexOf(guestName);
-        if (idx === -1) return false;
-        const newGuests = [...currentGuests];
-        newGuests.splice(idx, 1);
-        commitDataUpdate(newGuests, winners);
+        updateFn();
+        renderAll();
+        if (syncEnabled) pushToCloud();
         return true;
     }
 
-    // 重置所有奖项
-    function resetLotteryCloud() {
+    // 单个操作封装
+    function addGuestLocal(name) {
+        if (!name || name.trim() === "") return false;
+        const trimmed = name.trim();
+        const allWinners = [...winners.top, ...winners.first, ...winners.second, ...winners.third, ...winners.luck];
+        if (currentGuests.includes(trimmed) || allWinners.includes(trimmed)) {
+            alert(`宾客 "${trimmed}" 已经在中奖名单或候奖池中，不可重复添加。`);
+            return false;
+        }
+        currentGuests.push(trimmed);
+        return true;
+    }
+
+    function removeGuestLocal(guestName) {
+        const idx = currentGuests.indexOf(guestName);
+        if (idx !== -1) {
+            currentGuests.splice(idx, 1);
+            return true;
+        }
+        return false;
+    }
+
+    function resetLotteryLocal() {
+        currentGuests = [];
+        winners = { top: [], first: [], second: [], third: [], luck: [] };
+    }
+
+    function commitDrawLocal(winner, awardLevel) {
+        const idx = currentGuests.indexOf(winner);
+        if (idx === -1) return false;
+        currentGuests.splice(idx, 1);
+        winners[awardLevel].push(winner);
+        return true;
+    }
+
+    // 对外操作：添加来宾
+    function addGuestUI(name) {
+        applyDataChange(() => addGuestLocal(name));
+    }
+
+    function removeGuestUI(guestName) {
+        applyDataChange(() => removeGuestLocal(guestName));
+    }
+
+    function resetAllUI() {
         if (isRolling) {
             if (rollInterval) clearInterval(rollInterval);
             isRolling = false;
-            rollInterval = null;
         }
-        pendingWinner = null;
-        pendingAward = null;
-        rollingNameDiv.innerHTML = '💖 幸福待启 💖';
-        rollingNameDiv.classList.remove('winner-flash');
-        commitDataUpdate([], { top: [], first: [], second: [], third: [], luck: [] });
+        applyDataChange(() => resetLotteryLocal());
+        rollingNameDiv.innerHTML = "🔄 已重置所有奖项 & 清空候奖池 🔄";
+        setTimeout(() => { if(!isRolling) rollingNameDiv.innerHTML = "💖 点击抽取 💖"; }, 1500);
     }
 
-    // 抽奖提交（中奖）
-    function commitDraw(winnerName, awardLevel) {
-        const idx = currentGuests.indexOf(winnerName);
-        if (idx === -1) return false;
-        const newGuests = [...currentGuests];
-        newGuests.splice(idx, 1);
-        const newWinners = JSON.parse(JSON.stringify(winners));
-        newWinners[awardLevel].push(winnerName);
-        commitDataUpdate(newGuests, newWinners);
-        return true;
-    }
-
-    function finishDraw() {
-        if (rollInterval) {
-            clearInterval(rollInterval);
-            rollInterval = null;
-        }
-        isRolling = false;
-        if (pendingWinner && pendingAward && currentGuests.includes(pendingWinner)) {
-            commitDraw(pendingWinner, pendingAward);
-            rollingNameDiv.innerHTML = `🎉 ${escapeHtml(pendingWinner)} 🎉`;
-            rollingNameDiv.classList.add('winner-flash');
-            setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 600);
-        } else if (pendingWinner && pendingAward && !currentGuests.includes(pendingWinner)) {
-            rollingNameDiv.innerHTML = '🕊️ 该宾客已不在池中，请重新抽取 🕊️';
-        } else {
-            rollingNameDiv.innerHTML = '🕊️ 抽奖中断，请重新抽取 🕊️';
-        }
-        pendingWinner = null;
-        pendingAward = null;
-        renderAll();
-        if (currentGuests.length === 0 && !isRolling) {
-            drawTopBtn.disabled = true;
-            drawFirstBtn.disabled = true;
-            drawSecondBtn.disabled = true;
-            drawThirdBtn.disabled = true;
-            drawLuckBtn.disabled = true;
-            rollingNameDiv.innerHTML = '🏆 所有嘉宾均已中奖 🏆';
-        }
-    }
-
+    // 抽奖动画+最终提交
     function startDraw(awardLevel) {
         if (isRolling) return;
         if (currentGuests.length === 0) {
@@ -875,6 +787,8 @@
             setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 500);
             return;
         }
+
+        // 随机选出最终中奖者
         const randomIndex = Math.floor(Math.random() * currentGuests.length);
         const finalWinner = currentGuests[randomIndex];
         if (!finalWinner) return;
@@ -882,7 +796,7 @@
         pendingWinner = finalWinner;
         isRolling = true;
         rollCount = 0;
-        drawTopBtn.disabled = drawFirstBtn.disabled = drawSecondBtn.disabled = drawThirdBtn.disabled = drawLuckBtn.disabled = true;
+        renderAll(); // 禁用按钮
         if (rollInterval) clearInterval(rollInterval);
         rollInterval = setInterval(() => {
             if (!isRolling) {
@@ -893,10 +807,10 @@
                 const showIndex = Math.floor(Math.random() * currentGuests.length);
                 rollingNameDiv.innerHTML = escapeHtml(currentGuests[showIndex]);
             } else {
-                if (rollInterval) clearInterval(rollInterval);
+                clearInterval(rollInterval);
                 isRolling = false;
                 renderAll();
-                rollingNameDiv.innerHTML = '💗 来宾已空，重置或添加后再抽 💗';
+                rollingNameDiv.innerHTML = '💗 来宾已空，无法完成抽奖 💗';
                 pendingWinner = null;
                 pendingAward = null;
                 return;
@@ -905,54 +819,76 @@
             if (rollCount >= MAX_ROLL_FRAMES) {
                 clearInterval(rollInterval);
                 rollInterval = null;
-                finishDraw();
+                // 最终确认提交
+                if (pendingWinner && pendingAward && currentGuests.includes(pendingWinner)) {
+                    const success = applyDataChange(() => commitDrawLocal(pendingWinner, pendingAward));
+                    if (success) {
+                        rollingNameDiv.innerHTML = `🎉 ${escapeHtml(pendingWinner)} 🎉`;
+                        rollingNameDiv.classList.add('winner-flash');
+                        setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 600);
+                    } else {
+                        rollingNameDiv.innerHTML = '❌ 提交失败，请重试 ❌';
+                    }
+                } else if (pendingWinner && !currentGuests.includes(pendingWinner)) {
+                    rollingNameDiv.innerHTML = '🕊️ 该宾客已被同步移除，请重新抽取 🕊️';
+                } else {
+                    rollingNameDiv.innerHTML = '🕊️ 抽奖失败，请重新抽取 🕊️';
+                }
+                isRolling = false;
+                pendingWinner = null;
+                pendingAward = null;
+                renderAll();
+                if (currentGuests.length === 0 && !isRolling) {
+                    rollingNameDiv.innerHTML = '🏆 所有嘉宾均已中奖 🏆';
+                }
             }
         }, 70);
     }
 
-    function onAddGuest() {
-        if (isRolling) {
-            alert("抽奖动画进行中，请稍后再添加来宾～");
+    // 初始化Firebase并启动
+    function initFirebase() {
+        if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("DummyKey")) {
+            syncStatusTag.innerText = "⚠️ 未配置Firebase";
+            console.warn("请替换Firebase真实配置以启用跨设备同步，当前为单机模式");
+            renderAll();
+            rollingNameDiv.innerHTML = "💖 单机模式·点击抽取 💖";
             return;
         }
-        showGuestInputDialog("💝 请输入入场宾客姓名", (name) => {
-            if (name) addGuestToCloud(name);
-        });
+        try {
+            firebase.initializeApp(firebaseConfig);
+            database = firebase.database();
+            dbRef = database.ref('/weddingLottery');
+            syncEnabled = true;
+            syncStatusTag.innerText = "☁️ 已连接云端";
+            // 先监听云端 (一旦有数据就会同步)
+            startCloudSync();
+            // 主动拉取一次当前云端数据，避免空白等待
+            dbRef.once('value').then(snap => {
+                if (!snap.exists()) {
+                    // 云端无任何数据，推送当前本地(若无数据则推送空结构)
+                    pushToCloud();
+                }
+                renderAll();
+                if (currentGuests.length === 0) rollingNameDiv.innerHTML = "💖 等待添加来宾 💖";
+                else rollingNameDiv.innerHTML = "💖 点击抽取 💖";
+            }).catch(e => {
+                console.warn(e);
+                syncStatusTag.innerText = "⚠️ 云端连接失败";
+                renderAll();
+            });
+        } catch (err) {
+            console.error("Firebase初始化失败", err);
+            syncStatusTag.innerText = "❌ 同步不可用";
+            renderAll();
+        }
     }
 
-    function showGuestInputDialog(title, callback) {
-        const overlay = document.createElement('div');
-        overlay.className = 'custom-prompt-overlay';
-        overlay.innerHTML = `
-            <div class="custom-prompt-box">
-                <h3>🎀 ${title} 🎀</h3>
-                <input type="text" id="guestNameInput" placeholder="请输入完整的姓名或昵称" autocomplete="off">
-                <button id="confirmGuestBtn">确认加入</button>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-        const input = overlay.querySelector('#guestNameInput');
-        const confirmBtn = overlay.querySelector('#confirmGuestBtn');
-        const closeDialog = (result) => {
-            overlay.remove();
-            if (callback) callback(result);
-        };
-        confirmBtn.onclick = () => {
-            const val = input.value.trim();
-            if (val === "") { alert("姓名不能为空～"); return; }
-            closeDialog(val);
-        };
-        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') { const val = input.value.trim(); if(val) closeDialog(val); } });
-        input.focus();
-    }
-
-    // 事件委托删除
+    // 事件绑定
     guestListContainer.addEventListener('click', (e) => {
-        const deleteBtn = e.target.closest('.delete-guest-btn');
-        if (deleteBtn) {
-            e.preventDefault();
-            const guestName = deleteBtn.getAttribute('data-name');
-            if (guestName) removeGuestFromCloud(guestName);
+        const delBtn = e.target.closest('.delete-guest-btn');
+        if (delBtn) {
+            const guestName = delBtn.getAttribute('data-name');
+            if (guestName) removeGuestUI(guestName);
         }
     });
 
@@ -961,11 +897,36 @@
     drawSecondBtn.addEventListener('click', () => startDraw('second'));
     drawThirdBtn.addEventListener('click', () => startDraw('third'));
     drawLuckBtn.addEventListener('click', () => startDraw('luck'));
-    addGuestBtn.addEventListener('click', onAddGuest);
-    resetBtn.addEventListener('click', () => resetLotteryCloud());
+    addGuestBtn.addEventListener('click', () => {
+        if (isRolling) { alert("抽奖动画进行中，请稍后再添加来宾～"); return; }
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-prompt-overlay';
+        overlay.innerHTML = `
+            <div class="custom-prompt-box">
+                <h3>🎀 加入幸福候奖池 🎀</h3>
+                <input type="text" id="guestNameInput" placeholder="请输入完整的姓名或昵称" autocomplete="off">
+                <button id="confirmGuestBtn">确认加入</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        const input = overlay.querySelector('#guestNameInput');
+        const confirmBtn = overlay.querySelector('#confirmGuestBtn');
+        const close = (val) => {
+            overlay.remove();
+            if (val) addGuestUI(val);
+        };
+        confirmBtn.onclick = () => {
+            const val = input.value.trim();
+            if (!val) { alert("姓名不能为空～"); return; }
+            close(val);
+        };
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') confirmBtn.click(); });
+        input.focus();
+    });
+    resetBtn.addEventListener('click', () => { if (confirm("⚠️ 重置将清空所有奖项和候奖池，且会同步到所有设备，确定吗？")) resetAllUI(); });
 
-    // 启动系统：优先使用 Firebase 云端同步
-    initFirebaseSync();
+    // 启动 (若firebase未配好，单机可用但无同步)
+    initFirebase();
 </script>
 </body>
 </html>
