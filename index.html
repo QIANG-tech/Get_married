@@ -3,13 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>❤️ 臻爱婚礼 · 云端同步抽奖系统（密码保护版）❤️</title>
+    <title>❤️ 臻爱婚礼 · 花瓣飘落震撼抽奖 ❤️</title>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
-        /* ========== 样式保持不变 ========== */
-        *{margin:0;padding:0;box-sizing:border-box;user-select:none;}body{min-height:100vh;background:linear-gradient(145deg,#fff5f7 0,#ffe6ed 100%);font-family:'Segoe UI','Quicksand',system-ui,-apple-system,'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;padding:20px;position:relative;overflow-x:hidden;}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background-image:radial-gradient(circle at 20% 40%,rgba(255,200,210,0.2) 2%,transparent 2.5%),radial-gradient(circle at 80% 70%,rgba(255,180,190,0.2) 1.8%,transparent 2.2%);background-size:55px 55px,70px 70px;z-index:0;}.wedding-container{max-width:1400px;margin:0 auto;background:rgba(255,248,250,0.85);backdrop-filter:blur(3px);border-radius:68px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25),0 0 0 1px rgba(255,255,255,0.6) inset;overflow:hidden;padding:30px 25px 40px;transition:all .3s ease;position:relative;z-index:2;}.title-section{text-align:center;margin-bottom:30px;position:relative;}.title-section h1{font-size:2.6rem;background:linear-gradient(135deg,#c44569,#e66767,#f5b0b0);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,0.05);font-weight:700;}.sub{font-size:1.1rem;color:#b45f6b;background:rgba(255,240,243,0.7);display:inline-block;padding:6px 20px;border-radius:60px;margin-top:12px;backdrop-filter:blur(2px);font-weight:500;}.heart-icon{display:inline-block;animation:heartbeat 1.2s infinite ease;margin:0 6px;}@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}.lottery-card{background:#ffffffdd;backdrop-filter:blur(12px);border-radius:60px;padding:20px 15px;margin-bottom:40px;box-shadow:0 20px 35px -15px rgba(0,0,0,0.1),0 0 0 1px #ffe4eb inset;}.draw-area{text-align:center;}.draw-name-box{background:linear-gradient(145deg,#ffeff4,#ffe2ea);border-radius:70px;padding:25px 12px;margin:10px 20px;box-shadow:0 8px 20px rgba(196,87,112,0.15);}.draw-label{font-size:1.2rem;letter-spacing:3px;color:#c06a79;font-weight:500;margin-bottom:15px;}.rolling-name{font-size:2.8rem;font-weight:800;background:linear-gradient(120deg,#b83b5e,#e76f8c);background-clip:text;-webkit-background-clip:text;color:transparent;min-height:130px;display:flex;align-items:center;justify-content:center;word-break:break-word;padding:10px;transition:.2s;text-shadow:0 2px 5px #ffcdd9;flex-direction:column;gap:8px;}.rolling-name small{font-size:1rem;color:#e66767;background:rgba(255,255,255,0.6);padding:4px 12px;border-radius:40px;display:inline-block;}@keyframes glowPulse{0%{text-shadow:0 0 0 #ffb6c1;}100%{text-shadow:0 0 18px #ff99aa;}}.winner-flash{animation:glowPulse 0.3s ease-in-out 3;}.button-group{display:flex;gap:12px;justify-content:center;margin:25px 0 10px;flex-wrap:wrap;}.btn{border:none;padding:10px 18px;font-size:.95rem;font-weight:600;border-radius:60px;cursor:pointer;transition:all .2s ease;background:#fff;box-shadow:0 5px 12px rgba(0,0,0,0.1);font-family:inherit;display:inline-flex;align-items:center;gap:6px;}.btn-primary{background:linear-gradient(95deg,#e66767,#d9536e);color:#fff;box-shadow:0 8px 18px #e6676766;}.btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 14px 22px #e6676799;background:linear-gradient(95deg,#f07a7a,#e9637e);}.btn-add{background:linear-gradient(95deg,#5dade2,#2e86c1);color:#fff;box-shadow:0 8px 18px #2e86c166;}.btn-add:hover:not(:disabled){transform:translateY(-2px);background:linear-gradient(95deg,#6ea9e2,#3e96c1);}.btn-reset{background:#ffecf0;color:#b34e67;border:1px solid #ffcdda;}.btn-reset:hover:not(:disabled){background:#ffe2ea;}.btn:disabled{opacity:0.5;cursor:not-allowed;filter:grayscale(0.05);}.info-panels{display:flex;flex-wrap:wrap;gap:25px;margin-top:20px;}.panel-left{flex:1.2;min-width:260px;background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:20px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.panel-right{flex:2.5;min-width:300px;display:flex;flex-direction:column;gap:16px;}.award-panel{background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:12px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.award-panel h3{font-size:1.2rem;display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-left:10px;border-left:5px solid;}.award-panel h3 span.badge{background:#f7cad5;border-radius:40px;padding:2px 8px;font-size:.75rem;color:#a13e56;margin-left:6px;}.award-list{max-height:150px;overflow-y:auto;padding-right:5px;}.winner-item{background:linear-gradient(105deg,#fff0e7,#ffe3e8);margin:5px 0;padding:6px 12px;border-radius:40px;font-size:.85rem;font-weight:500;color:#b1465f;display:flex;align-items:center;gap:8px;border-left:4px solid #f3a683;}.winner-item::before{content:"🏆";font-size:.9rem;}.guest-list{max-height:340px;overflow-y:auto;padding-right:5px;}.guest-item{background:#fff0f4;margin:8px 0;padding:10px 16px;border-radius:50px;font-size:1rem;font-weight:500;color:#4b2d34;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #ffe2ea;}.guest-name{display:flex;align-items:center;gap:8px;}.guest-name::before{content:"💐";font-size:1rem;}.delete-guest-btn{background:#ffe0e7;border:none;border-radius:40px;padding:5px 12px;font-size:.75rem;font-weight:600;color:#b34e67;cursor:pointer;transition:all .2s;font-family:inherit;}.delete-guest-btn:hover{background:#f5c2cf;transform:scale(1.02);}.empty-tip{color:#c593a0;text-align:center;padding:15px;font-style:italic;font-size:.85rem;}.badge-count{background:#f7cad5;border-radius:40px;padding:4px 12px;font-size:.9rem;font-weight:600;color:#a13e56;}.prize-show{background:#feeef3;border-radius:50px;margin-top:35px;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.85rem;color:#b1586e;font-weight:500;}.prize-show span{background:#fff;padding:5px 14px;border-radius:30px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}footer{text-align:center;margin-top:35px;font-size:.75rem;color:#cd8b9b;}.sync-status{display:inline-block;margin-left:12px;font-size:.7rem;background:#e9d0d7;padding:4px 12px;border-radius:40px;color:#a13e56;}@media (max-width:900px){.info-panels{flex-direction:column;}.rolling-name{font-size:1.8rem;min-height:100px;}.btn{padding:6px 12px;font-size:.8rem;}.title-section h1{font-size:1.8rem;}.button-group{gap:8px;}.guest-item{padding:8px 12px;}.delete-guest-btn{padding:4px 10px;font-size:.7rem;}}.custom-prompt-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;font-family:inherit;}.custom-prompt-box{background:#fff9fb;border-radius:48px;padding:28px 32px;max-width:420px;width:80%;text-align:center;box-shadow:0 30px 40px rgba(0,0,0,0.2);border:1px solid #ffb7c5;}.custom-prompt-box h3{font-size:1.6rem;color:#bc6f80;margin-bottom:20px;}.custom-prompt-box input{width:100%;padding:14px 18px;font-size:1.1rem;border-radius:60px;border:1px solid #f5b0b0;outline:none;margin-bottom:20px;text-align:center;font-family:inherit;}.custom-prompt-box button{background:#e66767;color:#fff;border:none;padding:10px 25px;font-size:1rem;border-radius:40px;cursor:pointer;font-weight:bold;}.custom-prompt-box button:hover{background:#d9536e;}
+        /* ========== 基础样式 ========== */
+        *{margin:0;padding:0;box-sizing:border-box;user-select:none;}body{min-height:100vh;background:linear-gradient(145deg,#fff5f7 0,#ffe6ed 100%);font-family:'Segoe UI','Quicksand',system-ui,-apple-system,'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;padding:20px;position:relative;overflow-x:hidden;}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background-image:radial-gradient(circle at 20% 40%,rgba(255,200,210,0.2) 2%,transparent 2.5%),radial-gradient(circle at 80% 70%,rgba(255,180,190,0.2) 1.8%,transparent 2.2%);background-size:55px 55px,70px 70px;z-index:0;}.wedding-container{max-width:1400px;margin:0 auto;background:rgba(255,248,250,0.85);backdrop-filter:blur(3px);border-radius:68px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25),0 0 0 1px rgba(255,255,255,0.6) inset;overflow:hidden;padding:30px 25px 40px;transition:all .3s ease;position:relative;z-index:2;}.title-section{text-align:center;margin-bottom:30px;position:relative;}.title-section h1{font-size:2.6rem;background:linear-gradient(135deg,#c44569,#e66767,#f5b0b0);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,0.05);font-weight:700;}.sub{font-size:1.1rem;color:#b45f6b;background:rgba(255,240,243,0.7);display:inline-block;padding:6px 20px;border-radius:60px;margin-top:12px;backdrop-filter:blur(2px);font-weight:500;}.heart-icon{display:inline-block;animation:heartbeat 1.2s infinite ease;margin:0 6px;}@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}.lottery-card{background:#ffffffdd;backdrop-filter:blur(12px);border-radius:60px;padding:20px 15px;margin-bottom:40px;box-shadow:0 20px 35px -15px rgba(0,0,0,0.1),0 0 0 1px #ffe4eb inset;}.draw-area{text-align:center;}.draw-name-box{background:linear-gradient(145deg,#ffeff4,#ffe2ea);border-radius:70px;padding:25px 12px;margin:10px 20px;box-shadow:0 8px 20px rgba(196,87,112,0.15);}.draw-label{font-size:1.2rem;letter-spacing:3px;color:#c06a79;font-weight:500;margin-bottom:15px;}.rolling-name{font-size:2.8rem;font-weight:800;background:linear-gradient(120deg,#b83b5e,#e76f8c);background-clip:text;-webkit-background-clip:text;color:transparent;min-height:130px;display:flex;align-items:center;justify-content:center;word-break:break-word;padding:10px;transition:.2s;text-shadow:0 2px 5px #ffcdd9;flex-direction:column;gap:8px;position:relative;}.rolling-name small{font-size:1rem;color:#e66767;background:rgba(255,255,255,0.6);padding:4px 12px;border-radius:40px;display:inline-block;transition:0.1s ease;}@keyframes glowPulse{0%{text-shadow:0 0 0 #ffb6c1;}100%{text-shadow:0 0 18px #ff99aa;}}.winner-flash{animation:glowPulse 0.3s ease-in-out 3;}.button-group{display:flex;gap:12px;justify-content:center;margin:25px 0 10px;flex-wrap:wrap;}.btn{border:none;padding:10px 18px;font-size:.95rem;font-weight:600;border-radius:60px;cursor:pointer;transition:all .2s ease;background:#fff;box-shadow:0 5px 12px rgba(0,0,0,0.1);font-family:inherit;display:inline-flex;align-items:center;gap:6px;}.btn-primary{background:linear-gradient(95deg,#e66767,#d9536e);color:#fff;box-shadow:0 8px 18px #e6676766;}.btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 14px 22px #e6676799;background:linear-gradient(95deg,#f07a7a,#e9637e);}.btn-add{background:linear-gradient(95deg,#5dade2,#2e86c1);color:#fff;box-shadow:0 8px 18px #2e86c166;}.btn-add:hover:not(:disabled){transform:translateY(-2px);background:linear-gradient(95deg,#6ea9e2,#3e96c1);}.btn-reset{background:#ffecf0;color:#b34e67;border:1px solid #ffcdda;}.btn-reset:hover:not(:disabled){background:#ffe2ea;}.btn:disabled{opacity:0.5;cursor:not-allowed;filter:grayscale(0.05);}.info-panels{display:flex;flex-wrap:wrap;gap:25px;margin-top:20px;}.panel-left{flex:1.2;min-width:260px;background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:20px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.panel-right{flex:2.5;min-width:300px;display:flex;flex-direction:column;gap:16px;}.award-panel{background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:12px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.award-panel h3{font-size:1.2rem;display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-left:10px;border-left:5px solid;}.award-panel h3 span.badge{background:#f7cad5;border-radius:40px;padding:2px 8px;font-size:.75rem;color:#a13e56;margin-left:6px;}.award-list{max-height:150px;overflow-y:auto;padding-right:5px;}.winner-item{background:linear-gradient(105deg,#fff0e7,#ffe3e8);margin:5px 0;padding:6px 12px;border-radius:40px;font-size:.85rem;font-weight:500;color:#b1465f;display:flex;align-items:center;gap:8px;border-left:4px solid #f3a683;}.winner-item::before{content:"🏆";font-size:.9rem;}.guest-list{max-height:340px;overflow-y:auto;padding-right:5px;}.guest-item{background:#fff0f4;margin:8px 0;padding:10px 16px;border-radius:50px;font-size:1rem;font-weight:500;color:#4b2d34;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #ffe2ea;}.guest-name{display:flex;align-items:center;gap:8px;}.guest-name::before{content:"💐";font-size:1rem;}.delete-guest-btn{background:#ffe0e7;border:none;border-radius:40px;padding:5px 12px;font-size:.75rem;font-weight:600;color:#b34e67;cursor:pointer;transition:all .2s;font-family:inherit;}.delete-guest-btn:hover{background:#f5c2cf;transform:scale(1.02);}.empty-tip{color:#c593a0;text-align:center;padding:15px;font-style:italic;font-size:.85rem;}.badge-count{background:#f7cad5;border-radius:40px;padding:4px 12px;font-size:.9rem;font-weight:600;color:#a13e56;}.prize-show{background:#feeef3;border-radius:50px;margin-top:35px;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.85rem;color:#b1586e;font-weight:500;}.prize-show span{background:#fff;padding:5px 14px;border-radius:30px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}footer{text-align:center;margin-top:35px;font-size:.75rem;color:#cd8b9b;}.sync-status{display:inline-block;margin-left:12px;font-size:.7rem;background:#e9d0d7;padding:4px 12px;border-radius:40px;color:#a13e56;}@media (max-width:900px){.info-panels{flex-direction:column;}.rolling-name{font-size:1.8rem;min-height:100px;}.btn{padding:6px 12px;font-size:.8rem;}.title-section h1{font-size:1.8rem;}.button-group{gap:8px;}.guest-item{padding:8px 12px;}.delete-guest-btn{padding:4px 10px;font-size:.7rem;}}.custom-prompt-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;font-family:inherit;}.custom-prompt-box{background:#fff9fb;border-radius:48px;padding:28px 32px;max-width:420px;width:80%;text-align:center;box-shadow:0 30px 40px rgba(0,0,0,0.2);border:1px solid #ffb7c5;}.custom-prompt-box h3{font-size:1.6rem;color:#bc6f80;margin-bottom:20px;}.custom-prompt-box input{width:100%;padding:14px 18px;font-size:1.1rem;border-radius:60px;border:1px solid #f5b0b0;outline:none;margin-bottom:20px;text-align:center;font-family:inherit;}.custom-prompt-box button{background:#e66767;color:#fff;border:none;padding:10px 25px;font-size:1rem;border-radius:40px;cursor:pointer;font-weight:bold;}.custom-prompt-box button:hover{background:#d9536e;}
+
+        /* ========== 3D震撼倒计时效果 ========== */
+        .rolling-name.countdown-3d {
+            animation: countdown3DShake 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) infinite alternate;
+            transform-style: preserve-3d;
+            perspective: 500px;
+        }
+        @keyframes countdown3DShake {
+            0% { transform: scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg); text-shadow: 0 0 5px #ff6b8b, 0 0 10px #ff3b6f; letter-spacing: 2px; }
+            100% { transform: scale3d(1.08, 1.12, 1.05) rotateX(4deg) rotateY(2deg); text-shadow: 0 0 20px #ff3b6f, 0 0 30px #ff1a4f, 0 0 40px #c44569; letter-spacing: 4px; }
+        }
+        .rolling-name small.flash-second {
+            animation: secondFlash 0.2s ease-out 2;
+        }
+        @keyframes secondFlash {
+            0% { transform: scale(1); background: #ffb3c6; color: #a12e4a; box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.7); }
+            50% { transform: scale(1.4); background: #ff3b6f; color: white; box-shadow: 0 0 0 10px rgba(255, 51, 102, 0); }
+            100% { transform: scale(1); background: rgba(255, 255, 255, 0.6); color: #e66767; }
+        }
+        .rolling-name.winner-burst {
+            animation: winnerBurst 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes winnerBurst {
+            0% { transform: scale(1); text-shadow: 0 0 0 #ffaa00; }
+            30% { transform: scale(1.3); text-shadow: 0 0 25px #ffaa44; }
+            100% { transform: scale(1); text-shadow: 0 0 5px #ff99aa; }
+        }
+
+        /* 花瓣飘落图层 */
+        #petal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .petal {
+            position: absolute;
+            pointer-events: none;
+            will-change: transform, opacity;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.8;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            0% {
+                transform: translateY(-20px) rotate(0deg);
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -19,7 +78,7 @@
         <div class="sub">
             <span class="heart-icon">❤️</span> 新郎 陈顺强 & 新娘 李建 敬谢来宾 <span class="heart-icon">❤️</span>
         </div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color:#e28ca3;">—— 跨设备实时同步 · 全自动云端存储 ——</div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color:#e28ca3;">—— 跨设备实时同步 · 云端存储 ——</div>
     </div>
 
     <div class="lottery-card">
@@ -85,8 +144,11 @@
         <span>🌸 三等奖：高端喜糖礼篮</span>
         <span>🍬 幸运奖：定制伴手礼套装</span>
     </div>
-    <footer>💒 每位宾客仅可中奖一次 · 数据全设备实时同步 · 云端存储永久保留 💒</footer>
+    <footer>💒 每位宾客仅可中奖一次 · 数据全设备实时同步 · 花瓣飘落祝福 💒</footer>
 </div>
+
+<!-- 花瓣飘落容器 -->
+<div id="petal-container"></div>
 
 <script>
     // ==================== Firebase 配置 ====================
@@ -107,24 +169,144 @@
     let isLocalUpdating = false;
     let initialLoading = true;
 
-    // 全局数据
     let currentGuests = [];
-    let winners = {
-        top: [], first: [], second: [], third: [], luck: []
-    };
+    let winners = { top: [], first: [], second: [], third: [], luck: [] };
 
-    // 倒计时+滚动状态
     let activeCountdown = false;
     let countdownTimer = null;
     let rollingTimer = null;
     let remainingSeconds = 0;
-    let currentAward = null;          // 'top', 'first', 'second', 'third', 'luck'
+    let currentAward = null;
     let currentAwardDisplayName = '';
-    let lastRolledName = '';          // 最后一次滚动的名字
+    let lastRolledName = '';
 
     let isProcessing = false;
 
-    // DOM 元素
+    // 花瓣特效控制
+    let petalInterval = null;
+    const petalContainer = document.getElementById('petal-container');
+
+    // 创建花瓣元素
+    function createPetal() {
+        const petal = document.createElement('div');
+        petal.classList.add('petal');
+        const size = Math.random() * 20 + 15; // 15-35px
+        const leftPos = Math.random() * 100; // 0-100%
+        const duration = Math.random() * 4 + 4; // 4-8秒下落时间
+        const delay = Math.random() * 2; // 0-2秒延迟
+        // 随机选择花瓣颜色/形状（使用 emoji 或 彩色圆形）
+        const petalType = Math.random() > 0.5 ? '🌸' : '🌺';
+        petal.style.left = leftPos + '%';
+        petal.style.width = size + 'px';
+        petal.style.height = size + 'px';
+        petal.style.fontSize = size + 'px';
+        petal.style.animationDuration = duration + 's';
+        petal.style.animationDelay = delay + 's';
+        petal.innerHTML = petalType;
+        petal.style.color = `rgba(255, ${Math.floor(100 + Math.random() * 100)}, ${Math.floor(100 + Math.random() * 100)}, 0.8)`;
+        petal.style.display = 'flex';
+        petal.style.alignItems = 'center';
+        petal.style.justifyContent = 'center';
+        petal.style.textShadow = '0 0 2px rgba(0,0,0,0.2)';
+        return petal;
+    }
+
+    function startPetalRain() {
+        if (petalInterval) clearInterval(petalInterval);
+        // 每 200ms 添加一片花瓣
+        petalInterval = setInterval(() => {
+            if (!activeCountdown) return;
+            const petal = createPetal();
+            petalContainer.appendChild(petal);
+            // 动画结束后移除花瓣
+            petal.addEventListener('animationend', () => {
+                if (petal.parentNode) petal.parentNode.removeChild(petal);
+            });
+        }, 180);
+    }
+
+    function stopPetalRain() {
+        if (petalInterval) {
+            clearInterval(petalInterval);
+            petalInterval = null;
+        }
+        // 清除所有剩余花瓣
+        while (petalContainer.firstChild) {
+            petalContainer.removeChild(petalContainer.firstChild);
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
+    }
+
+    // 密码弹窗
+    function showPasswordDialog(callback) {
+        const existingOverlay = document.querySelector('.custom-prompt-overlay');
+        if (existingOverlay) existingOverlay.remove();
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-prompt-overlay';
+        overlay.innerHTML = `
+            <div class="custom-prompt-box">
+                <h3>🔐 操作授权</h3>
+                <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off">
+                <button id="confirmPasswordBtn">确认</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        const input = overlay.querySelector('#passwordInput');
+        const confirmBtn = overlay.querySelector('#confirmPasswordBtn');
+        const close = (isSuccess) => {
+            overlay.remove();
+            if (isSuccess === true && callback) callback();
+        };
+        confirmBtn.onclick = () => {
+            const pwd = input.value.trim();
+            if (pwd === "1616666") close(true);
+            else { alert("密码错误，操作已取消！"); close(false); }
+        };
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') confirmBtn.click(); });
+        input.focus();
+    }
+
+    function requirePassword(action) {
+        showPasswordDialog(() => action());
+    }
+
+    function setButtonsEnabled(enabled) {
+        const btns = [drawTopBtn, drawFirstBtn, drawSecondBtn, drawThirdBtn, drawLuckBtn, addGuestBtn, resetBtn];
+        btns.forEach(btn => { if (btn) btn.disabled = !enabled; });
+        if (enabled) {
+            const hasGuests = currentGuests.length > 0;
+            drawTopBtn.disabled = !hasGuests;
+            drawFirstBtn.disabled = !hasGuests;
+            drawSecondBtn.disabled = !hasGuests;
+            drawThirdBtn.disabled = !hasGuests;
+            drawLuckBtn.disabled = !hasGuests;
+            addGuestBtn.disabled = false;
+            resetBtn.disabled = false;
+        }
+    }
+
+    function startCountdownEffects() {
+        rollingNameDiv.classList.add('countdown-3d');
+        startPetalRain();
+    }
+    function stopCountdownEffects() {
+        rollingNameDiv.classList.remove('countdown-3d');
+        stopPetalRain();
+    }
+    function flashCountdownNumber() {
+        rollingCountdownSpan.classList.add('flash-second');
+        setTimeout(() => rollingCountdownSpan.classList.remove('flash-second'), 200);
+    }
+    function burstWinnerEffect() {
+        rollingNameDiv.classList.add('winner-burst');
+        setTimeout(() => rollingNameDiv.classList.remove('winner-burst'), 500);
+    }
+
+    const rollingNameDiv = document.getElementById('rollingName');
     const rollingNameText = document.getElementById('rollingNameText');
     const rollingCountdownSpan = document.getElementById('rollingCountdown');
     const drawTopBtn = document.getElementById('drawTopBtn');
@@ -148,96 +330,17 @@
     const luckCountSpan = document.getElementById('luckCount');
     const syncStatusTag = document.getElementById('syncStatusTag');
 
-    // 特殊宾客姓名（一等奖优先中奖者）
     const SPECIAL_GUEST = "祝永煌";
 
-    // ==================== 密码验证功能 ====================
-    const CORRECT_PASSWORD = "1616666";
-
-    // 显示自定义密码输入弹窗
-    function showPasswordDialog(callback) {
-        // 如果已有弹窗，先移除
-        const existingOverlay = document.querySelector('.custom-prompt-overlay');
-        if (existingOverlay) existingOverlay.remove();
-
-        const overlay = document.createElement('div');
-        overlay.className = 'custom-prompt-overlay';
-        overlay.innerHTML = `
-            <div class="custom-prompt-box">
-                <h3>🔐 操作授权</h3>
-                <input type="password" id="passwordInput" placeholder="请输入密码" autocomplete="off">
-                <button id="confirmPasswordBtn">确认</button>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-        const input = overlay.querySelector('#passwordInput');
-        const confirmBtn = overlay.querySelector('#confirmPasswordBtn');
-
-        const close = (isSuccess) => {
-            overlay.remove();
-            if (isSuccess === true && callback) callback();
-        };
-
-        confirmBtn.onclick = () => {
-            const pwd = input.value.trim();
-            if (pwd === CORRECT_PASSWORD) {
-                close(true);
-            } else {
-                alert("密码错误，操作已取消！");
-                close(false);
-            }
-        };
-        input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') confirmBtn.click();
-        });
-        input.focus();
-    }
-
-    // 通用密码保护包装函数
-    function requirePassword(action) {
-        // 如果已经有倒计时或抽奖正在进行，先提示（但不在密码弹窗前提示，保留原有逻辑）
-        // 注意：这里只是包装，真正的业务逻辑会由 action 执行，所以密码验证通过后才会执行 action。
-        // 但 action 内部可能会检查 activeCountdown 等，所以无需在密码层重复检查。
-        showPasswordDialog(() => {
-            action();
-        });
-    }
-
-    // ==================== 原有业务逻辑（未改动，仅调整函数引用） ====================
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
-    }
-
-    function setButtonsEnabled(enabled) {
-        const btns = [drawTopBtn, drawFirstBtn, drawSecondBtn, drawThirdBtn, drawLuckBtn, addGuestBtn, resetBtn];
-        btns.forEach(btn => { if (btn) btn.disabled = !enabled; });
-        if (enabled) {
-            const hasGuests = currentGuests.length > 0;
-            drawTopBtn.disabled = !hasGuests;
-            drawFirstBtn.disabled = !hasGuests;
-            drawSecondBtn.disabled = !hasGuests;
-            drawThirdBtn.disabled = !hasGuests;
-            drawLuckBtn.disabled = !hasGuests;
-            addGuestBtn.disabled = false;
-            resetBtn.disabled = false;
-        }
-    }
-
     function cancelCurrentCountdown(resetRollingName = true) {
-        if (countdownTimer) {
-            clearInterval(countdownTimer);
-            countdownTimer = null;
-        }
-        if (rollingTimer) {
-            clearInterval(rollingTimer);
-            rollingTimer = null;
-        }
+        if (countdownTimer) clearInterval(countdownTimer);
+        if (rollingTimer) clearInterval(rollingTimer);
         if (activeCountdown) {
             activeCountdown = false;
             currentAward = null;
             currentAwardDisplayName = '';
             remainingSeconds = 0;
+            stopCountdownEffects();
             if (resetRollingName) {
                 rollingNameText.innerHTML = '💖 点击抽取 💖';
                 rollingCountdownSpan.innerHTML = '';
@@ -258,7 +361,6 @@
             `).join('');
         }
         remainCountSpan.innerText = currentGuests.length;
-
         const renderAward = (listEl, arr, emptyMsg) => {
             if (arr.length === 0) listEl.innerHTML = `<div class="empty-tip">${emptyMsg}</div>`;
             else listEl.innerHTML = arr.map(w => `<div class="winner-item">🎉 ${escapeHtml(w)} 🎉</div>`).join('');
@@ -268,13 +370,11 @@
         renderAward(secondWinnerList, winners.second, '✨ 暂无二等奖得主 ✨');
         renderAward(thirdWinnerList, winners.third, '✨ 暂无三等奖得主 ✨');
         renderAward(luckWinnerList, winners.luck, '✨ 暂无幸运奖得主 ✨');
-        
         topCountSpan.innerText = winners.top.length;
         firstCountSpan.innerText = winners.first.length;
         secondCountSpan.innerText = winners.second.length;
         thirdCountSpan.innerText = winners.third.length;
         luckCountSpan.innerText = winners.luck.length;
-
         if (!activeCountdown && !isProcessing) {
             const hasGuests = currentGuests.length > 0;
             drawTopBtn.disabled = !hasGuests;
@@ -291,15 +391,8 @@
         if (!syncEnabled || !dbRef) return Promise.resolve();
         isLocalUpdating = true;
         const fullData = { currentGuests, winners };
-        return dbRef.set(fullData).then(() => {
-            setTimeout(() => { isLocalUpdating = false; }, 300);
-        }).catch(err => {
-            console.warn("云端写入失败", err);
-            syncStatusTag.innerText = "⚠️ 同步异常";
-            isLocalUpdating = false;
-            setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000);
-            throw err;
-        });
+        return dbRef.set(fullData).then(() => { setTimeout(() => { isLocalUpdating = false; }, 300); })
+            .catch(err => { console.warn("云端写入失败", err); syncStatusTag.innerText = "⚠️ 同步异常"; isLocalUpdating = false; setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000); throw err; });
     }
 
     async function commitWinner(winner, awardLevel) {
@@ -311,6 +404,7 @@
         if (syncEnabled) await pushToCloud().catch(e => console.warn);
         rollingNameText.innerHTML = `🎉 ${escapeHtml(winner)} 🎉`;
         rollingCountdownSpan.innerHTML = '';
+        burstWinnerEffect();
         rollingNameText.classList.add('winner-flash');
         setTimeout(() => rollingNameText.classList.remove('winner-flash'), 600);
         return true;
@@ -323,49 +417,33 @@
         rollingTimer = null;
         countdownTimer = null;
         activeCountdown = false;
+        stopCountdownEffects();
 
         const award = currentAward;
-        const displayName = currentAwardDisplayName;
         currentAward = null;
         currentAwardDisplayName = '';
 
         let finalWinner = null;
-
         if (award === 'first') {
             const hasSpecial = currentGuests.includes(SPECIAL_GUEST);
             const alreadyWon = winners.first.includes(SPECIAL_GUEST);
-            if (hasSpecial && !alreadyWon) {
-                finalWinner = SPECIAL_GUEST;
-            }
+            if (hasSpecial && !alreadyWon) finalWinner = SPECIAL_GUEST;
         }
-
         if (!finalWinner) {
-            if (lastRolledName && currentGuests.includes(lastRolledName)) {
-                finalWinner = lastRolledName;
-            } else if (currentGuests.length > 0) {
-                const randomIndex = Math.floor(Math.random() * currentGuests.length);
-                finalWinner = currentGuests[randomIndex];
-            }
+            if (lastRolledName && currentGuests.includes(lastRolledName)) finalWinner = lastRolledName;
+            else if (currentGuests.length > 0) finalWinner = currentGuests[Math.floor(Math.random() * currentGuests.length)];
         }
-
         if (!finalWinner) {
             rollingNameText.innerHTML = '🌸 候奖池为空，无法抽奖 🌸';
             rollingCountdownSpan.innerHTML = '';
             setButtonsEnabled(true);
             return;
         }
-
         const success = await commitWinner(finalWinner, award);
-        if (!success) {
-            rollingNameText.innerHTML = '❌ 抽奖失败，请重试 ❌';
-            rollingCountdownSpan.innerHTML = '';
-        }
+        if (!success) rollingNameText.innerHTML = '❌ 抽奖失败，请重试 ❌';
         setButtonsEnabled(true);
-        if (currentGuests.length === 0) {
-            rollingNameText.innerHTML = '🏆 所有嘉宾均已中奖 🏆';
-        } else if (!success) {
-            rollingNameText.innerHTML = '💖 点击抽取 💖';
-        }
+        if (currentGuests.length === 0) rollingNameText.innerHTML = '🏆 所有嘉宾均已中奖 🏆';
+        else if (!success) rollingNameText.innerHTML = '💖 点击抽取 💖';
     }
 
     function updateRollingName() {
@@ -378,18 +456,12 @@
         const randomIndex = Math.floor(Math.random() * currentGuests.length);
         lastRolledName = currentGuests[randomIndex];
         rollingNameText.innerHTML = escapeHtml(lastRolledName);
-        if (remainingSeconds > 0) {
-            rollingCountdownSpan.innerHTML = `⏰ 倒计时 ${remainingSeconds} 秒 ⏰`;
-        } else {
-            rollingCountdownSpan.innerHTML = '';
-        }
+        if (remainingSeconds > 0) rollingCountdownSpan.innerHTML = `⏰ 倒计时 ${remainingSeconds} 秒 ⏰`;
+        else rollingCountdownSpan.innerHTML = '';
     }
 
     function startCountdownDraw(awardLevel, seconds, displayName) {
-        if (activeCountdown) {
-            alert("已有抽奖倒计时进行中，请稍后再试～");
-            return false;
-        }
+        if (activeCountdown) { alert("已有抽奖倒计时进行中，请稍后再试～"); return false; }
         if (currentGuests.length === 0) {
             rollingNameText.innerHTML = '🌸 候奖池为空，请先添加来宾 🌸';
             rollingNameText.classList.add('winner-flash');
@@ -406,29 +478,23 @@
         rollingNameText.innerHTML = escapeHtml(lastRolledName);
         rollingCountdownSpan.innerHTML = `⏰ 倒计时 ${remainingSeconds} 秒 ⏰`;
         setButtonsEnabled(false);
+        startCountdownEffects();
 
         rollingTimer = setInterval(() => {
-            if (!activeCountdown) {
-                if (rollingTimer) clearInterval(rollingTimer);
-                return;
-            }
+            if (!activeCountdown) { if (rollingTimer) clearInterval(rollingTimer); return; }
             updateRollingName();
         }, 80);
 
         countdownTimer = setInterval(() => {
-            if (!activeCountdown) {
-                if (countdownTimer) clearInterval(countdownTimer);
-                return;
-            }
+            if (!activeCountdown) { if (countdownTimer) clearInterval(countdownTimer); return; }
             remainingSeconds--;
             if (remainingSeconds <= 0) {
-                clearInterval(countdownTimer);
-                countdownTimer = null;
-                clearInterval(rollingTimer);
-                rollingTimer = null;
+                clearInterval(countdownTimer); countdownTimer = null;
+                clearInterval(rollingTimer); rollingTimer = null;
                 finishCountdownDraw();
             } else {
                 rollingCountdownSpan.innerHTML = `⏰ 倒计时 ${remainingSeconds} 秒 ⏰`;
+                flashCountdownNumber();
             }
         }, 1000);
         return true;
@@ -438,12 +504,7 @@
         if (activeCountdown) {
             cancelCurrentCountdown(true);
             rollingNameText.innerHTML = `🔄 ${reason}，抽奖已取消 🔄`;
-            setTimeout(() => {
-                if (!activeCountdown && rollingNameText.innerHTML.includes("取消")) {
-                    rollingNameText.innerHTML = "💖 点击抽取 💖";
-                    rollingCountdownSpan.innerHTML = '';
-                }
-            }, 1500);
+            setTimeout(() => { if (!activeCountdown && rollingNameText.innerHTML.includes("取消")) rollingNameText.innerHTML = "💖 点击抽取 💖"; }, 1500);
         }
     }
 
@@ -453,69 +514,32 @@
             if (isLocalUpdating) return;
             const cloudData = snapshot.val();
             if (!cloudData) {
-                if (currentGuests.length > 0 || Object.values(winners).some(arr => arr.length > 0)) {
-                    if (!initialLoading) pushToCloud();
-                }
+                if (currentGuests.length > 0 || Object.values(winners).some(arr => arr.length > 0)) if (!initialLoading) pushToCloud();
                 return;
             }
             const newGuests = cloudData.currentGuests || [];
             const newWinners = cloudData.winners || { top: [], first: [], second: [], third: [], luck: [] };
-            const isEqual = (JSON.stringify(currentGuests) === JSON.stringify(newGuests) &&
-                             JSON.stringify(winners) === JSON.stringify(newWinners));
+            const isEqual = (JSON.stringify(currentGuests) === JSON.stringify(newGuests) && JSON.stringify(winners) === JSON.stringify(newWinners));
             if (!isEqual) {
-                if (!initialLoading) {
-                    abortCurrentAction("🎈 其他设备更新了名单");
-                }
+                if (!initialLoading) abortCurrentAction("🎈 其他设备更新了名单");
                 currentGuests = [...newGuests];
-                winners = {
-                    top: newWinners.top || [],
-                    first: newWinners.first || [],
-                    second: newWinners.second || [],
-                    third: newWinners.third || [],
-                    luck: newWinners.luck || []
-                };
+                winners = { top: newWinners.top || [], first: newWinners.first || [], second: newWinners.second || [], third: newWinners.third || [], luck: newWinners.luck || [] };
                 renderAll();
                 if (!initialLoading) {
                     rollingNameText.innerHTML = "💖 已同步最新数据 💖";
                     rollingCountdownSpan.innerHTML = '';
-                    setTimeout(() => {
-                        if (!activeCountdown && rollingNameText.innerHTML === "💖 已同步最新数据 💖") {
-                            rollingNameText.innerHTML = "💖 点击抽取 💖";
-                        }
-                    }, 1500);
-                } else {
-                    rollingNameText.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖";
-                    initialLoading = false;
-                }
-            } else if (initialLoading) {
-                initialLoading = false;
-                rollingNameText.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖";
-            }
-        }, (error) => {
-            console.error("监听失败", error);
-            syncStatusTag.innerText = "⚠️ 离线模式";
-            syncEnabled = false;
-        });
+                    setTimeout(() => { if (!activeCountdown && rollingNameText.innerHTML === "💖 已同步最新数据 💖") rollingNameText.innerHTML = "💖 点击抽取 💖"; }, 1500);
+                } else { rollingNameText.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖"; initialLoading = false; }
+            } else if (initialLoading) { initialLoading = false; rollingNameText.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖"; }
+        }, (error) => { console.error("监听失败", error); syncStatusTag.innerText = "⚠️ 离线模式"; syncEnabled = false; });
     }
 
     function applyDataChange(updateFn) {
-        if (activeCountdown) {
-            alert("抽奖倒计时进行中，请稍后操作～");
-            return false;
-        }
-        isProcessing = true;
-        setButtonsEnabled(false);
-        updateFn();
-        renderAll();
-        if (syncEnabled) {
-            pushToCloud().catch(e => console.warn).finally(() => {
-                isProcessing = false;
-                setButtonsEnabled(true);
-            });
-        } else {
-            isProcessing = false;
-            setButtonsEnabled(true);
-        }
+        if (activeCountdown) { alert("抽奖倒计时进行中，请稍后操作～"); return false; }
+        isProcessing = true; setButtonsEnabled(false);
+        updateFn(); renderAll();
+        if (syncEnabled) pushToCloud().catch(e => console.warn).finally(() => { isProcessing = false; setButtonsEnabled(true); });
+        else { isProcessing = false; setButtonsEnabled(true); }
         return true;
     }
 
@@ -523,184 +547,37 @@
         if (!name || name.trim() === "") return false;
         const trimmed = name.trim();
         const allWinners = [...winners.top, ...winners.first, ...winners.second, ...winners.third, ...winners.luck];
-        if (currentGuests.includes(trimmed) || allWinners.includes(trimmed)) {
-            alert(`宾客 "${trimmed}" 已经在中奖名单或候奖池中，不可重复添加。`);
-            return false;
-        }
-        currentGuests.push(trimmed);
-        return true;
+        if (currentGuests.includes(trimmed) || allWinners.includes(trimmed)) { alert(`宾客 "${trimmed}" 已经在中奖名单或候奖池中，不可重复添加。`); return false; }
+        currentGuests.push(trimmed); return true;
     }
-
-    function removeGuestLocal(guestName) {
-        const idx = currentGuests.indexOf(guestName);
-        if (idx !== -1) {
-            currentGuests.splice(idx, 1);
-            return true;
-        }
-        return false;
-    }
-
-    function resetLotteryLocal() {
-        currentGuests = [];
-        winners = { top: [], first: [], second: [], third: [], luck: [] };
-    }
-
-    function addGuestUI(name) {
-        applyDataChange(() => addGuestLocal(name));
-    }
-
-    function removeGuestUI(guestName) {
-        applyDataChange(() => removeGuestLocal(guestName));
-    }
-
+    function removeGuestLocal(guestName) { const idx = currentGuests.indexOf(guestName); if (idx !== -1) { currentGuests.splice(idx, 1); return true; } return false; }
+    function resetLotteryLocal() { currentGuests = []; winners = { top: [], first: [], second: [], third: [], luck: [] }; }
+    function addGuestUI(name) { applyDataChange(() => addGuestLocal(name)); }
+    function removeGuestUI(guestName) { applyDataChange(() => removeGuestLocal(guestName)); }
     async function resetAllUI() {
-        if (activeCountdown) {
-            cancelCurrentCountdown(true);
-        }
-        if (!syncEnabled) {
-            applyDataChange(() => resetLotteryLocal());
-            rollingNameText.innerHTML = "🔄 已重置所有奖项 & 清空候奖池 🔄";
-            setTimeout(() => {
-                if (!activeCountdown) rollingNameText.innerHTML = "💖 点击抽取 💖";
-            }, 1500);
-            return;
-        }
-        const originalText = resetBtn.innerHTML;
-        resetBtn.innerHTML = "⏳ 重置中...";
-        resetBtn.disabled = true;
-        try {
-            resetLotteryLocal();
-            renderAll();
-            rollingNameText.innerHTML = "🔄 正在同步云端清空... 🔄";
-            await pushToCloud();
-            const snap = await dbRef.once('value');
-            const cloudData = snap.val();
-            if (cloudData && (cloudData.currentGuests?.length > 0 || Object.values(cloudData.winners || {}).some(arr => arr?.length > 0))) {
-                await dbRef.set({ currentGuests: [], winners: { top: [], first: [], second: [], third: [], luck: [] } });
-                await new Promise(r => setTimeout(r, 500));
-            }
-            rollingNameText.innerHTML = "✅ 已重置所有奖项 & 清空候奖池 ✅";
-            setTimeout(() => {
-                if (!activeCountdown) rollingNameText.innerHTML = "💖 点击抽取 💖";
-            }, 1500);
-        } catch (err) {
-            console.error("重置同步失败", err);
-            rollingNameText.innerHTML = "❌ 重置失败，请检查网络后重试 ❌";
-            syncStatusTag.innerText = "⚠️ 重置失败";
-            setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000);
-        } finally {
-            resetBtn.innerHTML = originalText;
-            resetBtn.disabled = false;
-            setButtonsEnabled(true);
-        }
+        if (activeCountdown) cancelCurrentCountdown(true);
+        if (!syncEnabled) { applyDataChange(() => resetLotteryLocal()); rollingNameText.innerHTML = "🔄 已重置所有奖项 & 清空候奖池 🔄"; setTimeout(() => { if (!activeCountdown) rollingNameText.innerHTML = "💖 点击抽取 💖"; }, 1500); return; }
+        const originalText = resetBtn.innerHTML; resetBtn.innerHTML = "⏳ 重置中..."; resetBtn.disabled = true;
+        try { resetLotteryLocal(); renderAll(); rollingNameText.innerHTML = "🔄 正在同步云端清空... 🔄"; await pushToCloud(); const snap = await dbRef.once('value'); const cloudData = snap.val(); if (cloudData && (cloudData.currentGuests?.length > 0 || Object.values(cloudData.winners || {}).some(arr => arr?.length > 0))) { await dbRef.set({ currentGuests: [], winners: { top: [], first: [], second: [], third: [], luck: [] } }); await new Promise(r => setTimeout(r, 500)); } rollingNameText.innerHTML = "✅ 已重置所有奖项 & 清空候奖池 ✅"; setTimeout(() => { if (!activeCountdown) rollingNameText.innerHTML = "💖 点击抽取 💖"; }, 1500); } catch (err) { console.error("重置同步失败", err); rollingNameText.innerHTML = "❌ 重置失败，请检查网络后重试 ❌"; syncStatusTag.innerText = "⚠️ 重置失败"; setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000); } finally { resetBtn.innerHTML = originalText; resetBtn.disabled = false; setButtonsEnabled(true); }
     }
 
     function initFirebase() {
-        if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("DummyKey")) {
-            syncStatusTag.innerText = "⚠️ 未配置Firebase";
-            console.warn("请替换Firebase真实配置以启用跨设备同步，当前为单机模式");
-            renderAll();
-            rollingNameText.innerHTML = "💖 单机模式·点击抽取 💖";
-            return;
-        }
-        try {
-            firebase.initializeApp(firebaseConfig);
-            database = firebase.database();
-            dbRef = database.ref('/weddingLottery');
-            syncEnabled = true;
-            syncStatusTag.innerText = "☁️ 已连接云端";
-            dbRef.once('value').then(snap => {
-                const cloudData = snap.val();
-                if (cloudData) {
-                    currentGuests = cloudData.currentGuests || [];
-                    winners = {
-                        top: cloudData.winners?.top || [],
-                        first: cloudData.winners?.first || [],
-                        second: cloudData.winners?.second || [],
-                        third: cloudData.winners?.third || [],
-                        luck: cloudData.winners?.luck || []
-                    };
-                } else {
-                    currentGuests = [];
-                    winners = { top: [], first: [], second: [], third: [], luck: [] };
-                    pushToCloud();
-                }
-                renderAll();
-                rollingNameText.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖";
-                initialLoading = false;
-                startCloudSync();
-            }).catch(e => {
-                console.warn("初次拉取失败", e);
-                syncStatusTag.innerText = "⚠️ 云端连接失败";
-                renderAll();
-                initialLoading = false;
-            });
-        } catch (err) {
-            console.error("Firebase初始化失败", err);
-            syncStatusTag.innerText = "❌ 同步不可用";
-            renderAll();
-        }
+        if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("DummyKey")) { syncStatusTag.innerText = "⚠️ 未配置Firebase"; console.warn("请替换Firebase真实配置"); renderAll(); rollingNameText.innerHTML = "💖 单机模式·点击抽取 💖"; return; }
+        try { firebase.initializeApp(firebaseConfig); database = firebase.database(); dbRef = database.ref('/weddingLottery'); syncEnabled = true; syncStatusTag.innerText = "☁️ 已连接云端"; dbRef.once('value').then(snap => { const cloudData = snap.val(); if (cloudData) { currentGuests = cloudData.currentGuests || []; winners = { top: cloudData.winners?.top || [], first: cloudData.winners?.first || [], second: cloudData.winners?.second || [], third: cloudData.winners?.third || [], luck: cloudData.winners?.luck || [] }; } else { currentGuests = []; winners = { top: [], first: [], second: [], third: [], luck: [] }; pushToCloud(); } renderAll(); rollingNameText.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖"; initialLoading = false; startCloudSync(); }).catch(e => { console.warn("初次拉取失败", e); syncStatusTag.innerText = "⚠️ 云端连接失败"; renderAll(); initialLoading = false; }); } catch (err) { console.error("Firebase初始化失败", err); syncStatusTag.innerText = "❌ 同步不可用"; renderAll(); }
     }
 
-    // ==================== 事件绑定（添加密码保护） ====================
-    guestListContainer.addEventListener('click', (e) => {
-        const delBtn = e.target.closest('.delete-guest-btn');
-        if (delBtn) {
-            const guestName = delBtn.getAttribute('data-name');
-            if (guestName) removeGuestUI(guestName);
-        }
-    });
-
-    // 需要密码验证的六个按钮
-    drawTopBtn.addEventListener('click', () => {
-        requirePassword(() => startCountdownDraw('top', 8, '👑 特等奖'));
-    });
-    drawFirstBtn.addEventListener('click', () => {
-        requirePassword(() => startCountdownDraw('first', 5, '🏆 一等奖'));
-    });
-    drawSecondBtn.addEventListener('click', () => {
-        requirePassword(() => startCountdownDraw('second', 3, '🎀 二等奖'));
-    });
-    drawThirdBtn.addEventListener('click', () => {
-        requirePassword(() => startCountdownDraw('third', 2, '🌸 三等奖'));
-    });
-    drawLuckBtn.addEventListener('click', () => {
-        requirePassword(() => startCountdownDraw('luck', 2, '🍀 幸运奖'));
-    });
-    resetBtn.addEventListener('click', () => {
-        requirePassword(() => {
-            if (confirm("⚠️ 重置将清空所有奖项和候奖池，且会同步到所有设备，确定吗？")) {
-                resetAllUI();
-            }
-        });
-    });
-
-    // 添加来宾按钮不需要密码验证
+    // 事件绑定
+    guestListContainer.addEventListener('click', (e) => { const delBtn = e.target.closest('.delete-guest-btn'); if (delBtn) { const guestName = delBtn.getAttribute('data-name'); if (guestName) removeGuestUI(guestName); } });
+    drawTopBtn.addEventListener('click', () => requirePassword(() => startCountdownDraw('top', 8, '👑 特等奖')));
+    drawFirstBtn.addEventListener('click', () => requirePassword(() => startCountdownDraw('first', 5, '🏆 一等奖')));
+    drawSecondBtn.addEventListener('click', () => requirePassword(() => startCountdownDraw('second', 3, '🎀 二等奖')));
+    drawThirdBtn.addEventListener('click', () => requirePassword(() => startCountdownDraw('third', 2, '🌸 三等奖')));
+    drawLuckBtn.addEventListener('click', () => requirePassword(() => startCountdownDraw('luck', 2, '🍀 幸运奖')));
+    resetBtn.addEventListener('click', () => requirePassword(() => { if (confirm("⚠️ 重置将清空所有奖项和候奖池，且会同步到所有设备，确定吗？")) resetAllUI(); }));
     addGuestBtn.addEventListener('click', () => {
         if (activeCountdown) { alert("抽奖倒计时进行中，请稍后再添加来宾～"); return; }
-        const overlay = document.createElement('div');
-        overlay.className = 'custom-prompt-overlay';
-        overlay.innerHTML = `
-            <div class="custom-prompt-box">
-                <h3>🎀 加入幸福候奖池 🎀</h3>
-                <input type="text" id="guestNameInput" placeholder="请输入完整的姓名或昵称" autocomplete="off">
-                <button id="confirmGuestBtn">确认加入</button>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-        const input = overlay.querySelector('#guestNameInput');
-        const confirmBtn = overlay.querySelector('#confirmGuestBtn');
-        const close = (val) => {
-            overlay.remove();
-            if (val) addGuestUI(val);
-        };
-        confirmBtn.onclick = () => {
-            const val = input.value.trim();
-            if (!val) { alert("姓名不能为空～"); return; }
-            close(val);
-        };
-        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') confirmBtn.click(); });
-        input.focus();
+        const overlay = document.createElement('div'); overlay.className = 'custom-prompt-overlay'; overlay.innerHTML = `<div class="custom-prompt-box"><h3>🎀 加入幸福候奖池 🎀</h3><input type="text" id="guestNameInput" placeholder="请输入完整的姓名或昵称" autocomplete="off"><button id="confirmGuestBtn">确认加入</button></div>`;
+        document.body.appendChild(overlay); const input = overlay.querySelector('#guestNameInput'); const confirmBtn = overlay.querySelector('#confirmGuestBtn'); const close = (val) => { overlay.remove(); if (val) addGuestUI(val); }; confirmBtn.onclick = () => { const val = input.value.trim(); if (!val) { alert("姓名不能为空～"); return; } close(val); }; input.addEventListener('keypress', (e) => { if (e.key === 'Enter') confirmBtn.click(); }); input.focus();
     });
 
     initFirebase();
