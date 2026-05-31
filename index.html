@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>❤️ 臻爱婚礼 · 云端同步抽奖系统 ❤️</title>
+    <title>❤️ 臻爱婚礼 · 云端同步抽奖系统（含倒计时）❤️</title>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
-        /* ========== 样式保持不变 ========== */
+        /* ========== 样式保持不变（略作调整以适配倒计时显示） ========== */
         *{margin:0;padding:0;box-sizing:border-box;user-select:none;}body{min-height:100vh;background:linear-gradient(145deg,#fff5f7 0,#ffe6ed 100%);font-family:'Segoe UI','Quicksand',system-ui,-apple-system,'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;padding:20px;position:relative;overflow-x:hidden;}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background-image:radial-gradient(circle at 20% 40%,rgba(255,200,210,0.2) 2%,transparent 2.5%),radial-gradient(circle at 80% 70%,rgba(255,180,190,0.2) 1.8%,transparent 2.2%);background-size:55px 55px,70px 70px;z-index:0;}.wedding-container{max-width:1400px;margin:0 auto;background:rgba(255,248,250,0.85);backdrop-filter:blur(3px);border-radius:68px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25),0 0 0 1px rgba(255,255,255,0.6) inset;overflow:hidden;padding:30px 25px 40px;transition:all .3s ease;position:relative;z-index:2;}.title-section{text-align:center;margin-bottom:30px;position:relative;}.title-section h1{font-size:2.6rem;background:linear-gradient(135deg,#c44569,#e66767,#f5b0b0);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,0.05);font-weight:700;}.sub{font-size:1.1rem;color:#b45f6b;background:rgba(255,240,243,0.7);display:inline-block;padding:6px 20px;border-radius:60px;margin-top:12px;backdrop-filter:blur(2px);font-weight:500;}.heart-icon{display:inline-block;animation:heartbeat 1.2s infinite ease;margin:0 6px;}@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}.lottery-card{background:#ffffffdd;backdrop-filter:blur(12px);border-radius:60px;padding:20px 15px;margin-bottom:40px;box-shadow:0 20px 35px -15px rgba(0,0,0,0.1),0 0 0 1px #ffe4eb inset;}.draw-area{text-align:center;}.draw-name-box{background:linear-gradient(145deg,#ffeff4,#ffe2ea);border-radius:70px;padding:25px 12px;margin:10px 20px;box-shadow:0 8px 20px rgba(196,87,112,0.15);}.draw-label{font-size:1.2rem;letter-spacing:3px;color:#c06a79;font-weight:500;margin-bottom:15px;}.rolling-name{font-size:3.3rem;font-weight:800;background:linear-gradient(120deg,#b83b5e,#e76f8c);background-clip:text;-webkit-background-clip:text;color:transparent;min-height:130px;display:flex;align-items:center;justify-content:center;word-break:break-word;padding:10px;transition:.2s;text-shadow:0 2px 5px #ffcdd9;}@keyframes glowPulse{0%{text-shadow:0 0 0 #ffb6c1;}100%{text-shadow:0 0 18px #ff99aa;}}.winner-flash{animation:glowPulse 0.3s ease-in-out 3;}.button-group{display:flex;gap:12px;justify-content:center;margin:25px 0 10px;flex-wrap:wrap;}.btn{border:none;padding:10px 18px;font-size:.95rem;font-weight:600;border-radius:60px;cursor:pointer;transition:all .2s ease;background:#fff;box-shadow:0 5px 12px rgba(0,0,0,0.1);font-family:inherit;display:inline-flex;align-items:center;gap:6px;}.btn-primary{background:linear-gradient(95deg,#e66767,#d9536e);color:#fff;box-shadow:0 8px 18px #e6676766;}.btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 14px 22px #e6676799;background:linear-gradient(95deg,#f07a7a,#e9637e);}.btn-add{background:linear-gradient(95deg,#5dade2,#2e86c1);color:#fff;box-shadow:0 8px 18px #2e86c166;}.btn-add:hover:not(:disabled){transform:translateY(-2px);background:linear-gradient(95deg,#6ea9e2,#3e96c1);}.btn-reset{background:#ffecf0;color:#b34e67;border:1px solid #ffcdda;}.btn-reset:hover:not(:disabled){background:#ffe2ea;}.btn:disabled{opacity:0.5;cursor:not-allowed;filter:grayscale(0.05);}.info-panels{display:flex;flex-wrap:wrap;gap:25px;margin-top:20px;}.panel-left{flex:1.2;min-width:260px;background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:20px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.panel-right{flex:2.5;min-width:300px;display:flex;flex-direction:column;gap:16px;}.award-panel{background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:12px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.award-panel h3{font-size:1.2rem;display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-left:10px;border-left:5px solid;}.award-panel h3 span.badge{background:#f7cad5;border-radius:40px;padding:2px 8px;font-size:.75rem;color:#a13e56;margin-left:6px;}.award-list{max-height:150px;overflow-y:auto;padding-right:5px;}.winner-item{background:linear-gradient(105deg,#fff0e7,#ffe3e8);margin:5px 0;padding:6px 12px;border-radius:40px;font-size:.85rem;font-weight:500;color:#b1465f;display:flex;align-items:center;gap:8px;border-left:4px solid #f3a683;}.winner-item::before{content:"🏆";font-size:.9rem;}.guest-list{max-height:340px;overflow-y:auto;padding-right:5px;}.guest-item{background:#fff0f4;margin:8px 0;padding:10px 16px;border-radius:50px;font-size:1rem;font-weight:500;color:#4b2d34;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #ffe2ea;}.guest-name{display:flex;align-items:center;gap:8px;}.guest-name::before{content:"💐";font-size:1rem;}.delete-guest-btn{background:#ffe0e7;border:none;border-radius:40px;padding:5px 12px;font-size:.75rem;font-weight:600;color:#b34e67;cursor:pointer;transition:all .2s;font-family:inherit;}.delete-guest-btn:hover{background:#f5c2cf;transform:scale(1.02);}.empty-tip{color:#c593a0;text-align:center;padding:15px;font-style:italic;font-size:.85rem;}.badge-count{background:#f7cad5;border-radius:40px;padding:4px 12px;font-size:.9rem;font-weight:600;color:#a13e56;}.prize-show{background:#feeef3;border-radius:50px;margin-top:35px;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.85rem;color:#b1586e;font-weight:500;}.prize-show span{background:#fff;padding:5px 14px;border-radius:30px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}footer{text-align:center;margin-top:35px;font-size:.75rem;color:#cd8b9b;}.sync-status{display:inline-block;margin-left:12px;font-size:.7rem;background:#e9d0d7;padding:4px 12px;border-radius:40px;color:#a13e56;}@media (max-width:900px){.info-panels{flex-direction:column;}.rolling-name{font-size:2rem;min-height:90px;}.btn{padding:6px 12px;font-size:.8rem;}.title-section h1{font-size:1.8rem;}.button-group{gap:8px;}.guest-item{padding:8px 12px;}.delete-guest-btn{padding:4px 10px;font-size:.7rem;}}.custom-prompt-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;font-family:inherit;}.custom-prompt-box{background:#fff9fb;border-radius:48px;padding:28px 32px;max-width:420px;width:80%;text-align:center;box-shadow:0 30px 40px rgba(0,0,0,0.2);border:1px solid #ffb7c5;}.custom-prompt-box h3{font-size:1.6rem;color:#bc6f80;margin-bottom:20px;}.custom-prompt-box input{width:100%;padding:14px 18px;font-size:1.1rem;border-radius:60px;border:1px solid #f5b0b0;outline:none;margin-bottom:20px;text-align:center;font-family:inherit;}.custom-prompt-box button{background:#e66767;color:#fff;border:none;padding:10px 25px;font-size:1rem;border-radius:40px;cursor:pointer;font-weight:bold;}.custom-prompt-box button:hover{background:#d9536e;}
     </style>
 </head>
@@ -29,11 +29,11 @@
                 <div class="rolling-name" id="rollingName">💖 加载云端数据中 💖</div>
             </div>
             <div class="button-group">
-                <button class="btn btn-primary" id="drawTopBtn">👑 特等奖 👑</button>
-                <button class="btn btn-primary" id="drawFirstBtn">🏅 一等奖 🏅</button>
-                <button class="btn btn-primary" id="drawSecondBtn">🎀 二等奖 🎀</button>
-                <button class="btn btn-primary" id="drawThirdBtn">🌸 三等奖 🌸</button>
-                <button class="btn btn-primary" id="drawLuckBtn">🍀 幸运奖 🍀</button>
+                <button class="btn btn-primary" id="drawTopBtn">👑 特等奖 (倒计时8秒) 👑</button>
+                <button class="btn btn-primary" id="drawFirstBtn">🏅 一等奖 (倒计时5秒) 🏅</button>
+                <button class="btn btn-primary" id="drawSecondBtn">🎀 二等奖 (倒计时3秒) 🎀</button>
+                <button class="btn btn-primary" id="drawThirdBtn">🌸 三等奖 (直接抽) 🌸</button>
+                <button class="btn btn-primary" id="drawLuckBtn">🍀 幸运奖 (直接抽) 🍀</button>
                 <button class="btn btn-add" id="addGuestBtn">➕ 添加入场来宾</button>
                 <button class="btn btn-reset" id="resetBtn">🔄 重置全部奖项</button>
             </div>
@@ -101,8 +101,8 @@
     let database = null;
     let dbRef = null;
     let syncEnabled = false;
-    let isLocalUpdating = false;      // 防止监听回环
-    let initialLoading = true;        // 首次加载标志，避免重复同步
+    let isLocalUpdating = false;
+    let initialLoading = true;
 
     // 全局数据
     let currentGuests = [];
@@ -117,6 +117,12 @@
     const MAX_ROLL_FRAMES = 18;
     let pendingAward = null;
     let pendingWinner = null;
+
+    // 倒计时相关变量
+    let countdownInterval = null;
+    let countdownSeconds = 0;
+    let countdownAward = null;
+    let isCountdownActive = false;   // 倒计时是否进行中
 
     // DOM 元素
     const rollingNameDiv = document.getElementById('rollingName');
@@ -146,6 +152,91 @@
         return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
     }
 
+    // 禁用/启用所有操作按钮（倒计时或抽奖时）
+    function setButtonsEnabled(enabled) {
+        const btns = [drawTopBtn, drawFirstBtn, drawSecondBtn, drawThirdBtn, drawLuckBtn, addGuestBtn, resetBtn];
+        btns.forEach(btn => { if (btn) btn.disabled = !enabled; });
+        // 抽奖按钮还需要额外根据候奖池是否为空来启用，但这里先全部设 enabled，后面 renderAll 会再次校正
+        if (enabled) {
+            // 重新校正抽奖按钮状态（候奖池为空时禁用）
+            const hasGuests = currentGuests.length > 0;
+            drawTopBtn.disabled = !hasGuests;
+            drawFirstBtn.disabled = !hasGuests;
+            drawSecondBtn.disabled = !hasGuests;
+            drawThirdBtn.disabled = !hasGuests;
+            drawLuckBtn.disabled = !hasGuests;
+        }
+    }
+
+    // 取消倒计时（如果有）
+    function cancelCountdown(reason = "") {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+        if (isCountdownActive) {
+            isCountdownActive = false;
+            countdownAward = null;
+            countdownSeconds = 0;
+            if (reason) {
+                rollingNameDiv.innerHTML = reason;
+                setTimeout(() => {
+                    if (!isRolling && !isCountdownActive && rollingNameDiv.innerHTML === reason) {
+                        rollingNameDiv.innerHTML = "💖 点击抽取 💖";
+                    }
+                }, 1500);
+            }
+            setButtonsEnabled(true); // 恢复按钮
+        }
+    }
+
+    // 开始倒计时
+    function startCountdown(awardLevel, seconds, awardDisplayName) {
+        if (isRolling) {
+            alert("抽奖动画进行中，请稍后再试～");
+            return false;
+        }
+        if (isCountdownActive) {
+            alert("已有倒计时进行中，请等待当前抽奖完成～");
+            return false;
+        }
+        if (currentGuests.length === 0) {
+            rollingNameDiv.innerHTML = '🌸 候奖池为空，请先添加来宾 🌸';
+            rollingNameDiv.classList.add('winner-flash');
+            setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 500);
+            return false;
+        }
+
+        // 开始倒计时
+        isCountdownActive = true;
+        countdownAward = awardLevel;
+        countdownSeconds = seconds;
+        setButtonsEnabled(false);  // 禁用所有操作按钮
+        rollingNameDiv.innerHTML = `${awardDisplayName} 倒计时: ${seconds} 秒 ⏰`;
+
+        countdownInterval = setInterval(() => {
+            if (!isCountdownActive) {
+                if (countdownInterval) clearInterval(countdownInterval);
+                return;
+            }
+            countdownSeconds--;
+            if (countdownSeconds <= 0) {
+                // 倒计时结束，清除倒计时状态，执行抽奖
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+                isCountdownActive = false;
+                setButtonsEnabled(false); // 抽奖过程中依然禁用按钮
+                // 开始抽奖动画
+                startDraw(countdownAward);
+                countdownAward = null;
+            } else {
+                rollingNameDiv.innerHTML = `${awardDisplayName} 倒计时: ${countdownSeconds} 秒 ⏰`;
+            }
+        }, 1000);
+        return true;
+    }
+
+    // 渲染全部UI
     function renderAll() {
         if (currentGuests.length === 0) {
             guestListContainer.innerHTML = '<div class="empty-tip">🌸 候奖池暂无来宾，请点击“添加入场来宾” 🌸</div>';
@@ -175,23 +266,28 @@
         thirdCountSpan.innerText = winners.third.length;
         luckCountSpan.innerText = winners.luck.length;
 
-        const hasGuests = currentGuests.length > 0;
-        if (!isRolling) {
+        // 控制抽奖按钮可用性（如果不在倒计时和抽奖中）
+        if (!isRolling && !isCountdownActive) {
+            const hasGuests = currentGuests.length > 0;
             drawTopBtn.disabled = !hasGuests;
             drawFirstBtn.disabled = !hasGuests;
             drawSecondBtn.disabled = !hasGuests;
             drawThirdBtn.disabled = !hasGuests;
             drawLuckBtn.disabled = !hasGuests;
+            addGuestBtn.disabled = false;
+            resetBtn.disabled = false;
         } else {
             drawTopBtn.disabled = true;
             drawFirstBtn.disabled = true;
             drawSecondBtn.disabled = true;
             drawThirdBtn.disabled = true;
             drawLuckBtn.disabled = true;
+            addGuestBtn.disabled = true;
+            resetBtn.disabled = true;
         }
     }
 
-    // 推送到云端（带防回环，返回Promise）
+    // 推送到云端
     function pushToCloud() {
         if (!syncEnabled || !dbRef) return Promise.resolve();
         isLocalUpdating = true;
@@ -207,32 +303,33 @@
         });
     }
 
-    // 中断抽奖动画
-    function abortRollingIfNeeded(reason = "云端数据更新") {
+    // 中断抽奖动画或倒计时（当远程数据更新时）
+    function abortCurrentAction(reason = "云端数据更新") {
         if (isRolling) {
             if (rollInterval) clearInterval(rollInterval);
             rollInterval = null;
             isRolling = false;
             rollingNameDiv.innerHTML = `🔄 ${reason}，抽奖已取消，请重新抽取 🔄`;
             setTimeout(() => {
-                if (!isRolling && rollingNameDiv.innerHTML.includes("重新抽取")) {
+                if (!isRolling && !isCountdownActive && rollingNameDiv.innerHTML.includes("重新抽取")) {
                     rollingNameDiv.innerHTML = "💖 点击抽取 💖";
                 }
             }, 1500);
             pendingWinner = null;
             pendingAward = null;
             renderAll();
+        } else if (isCountdownActive) {
+            cancelCountdown(`🔄 ${reason}，倒计时已取消`);
         }
     }
 
-    // 监听云端变化（防回环 + 初次加载特殊处理）
+    // 监听云端变化
     function startCloudSync() {
         if (!dbRef) return;
         dbRef.on('value', (snapshot) => {
-            if (isLocalUpdating) return; // 本地主动推送中，忽略
+            if (isLocalUpdating) return;
             const cloudData = snapshot.val();
             if (!cloudData) {
-                // 云端为空，若本地有数据则上传一次
                 if (currentGuests.length > 0 || Object.values(winners).some(arr => arr.length > 0)) {
                     if (!initialLoading) pushToCloud();
                 }
@@ -243,9 +340,8 @@
             const isEqual = (JSON.stringify(currentGuests) === JSON.stringify(newGuests) &&
                              JSON.stringify(winners) === JSON.stringify(newWinners));
             if (!isEqual) {
-                // 仅在非初次加载时提示中断，初次加载直接替换
                 if (!initialLoading) {
-                    abortRollingIfNeeded("🎈 其他设备更新了名单");
+                    abortCurrentAction("🎈 其他设备更新了名单");
                 }
                 currentGuests = [...newGuests];
                 winners = {
@@ -259,12 +355,11 @@
                 if (!initialLoading) {
                     rollingNameDiv.innerHTML = "💖 已同步最新数据 💖";
                     setTimeout(() => {
-                        if (!isRolling && rollingNameDiv.innerHTML === "💖 已同步最新数据 💖") {
+                        if (!isRolling && !isCountdownActive && rollingNameDiv.innerHTML === "💖 已同步最新数据 💖") {
                             rollingNameDiv.innerHTML = "💖 点击抽取 💖";
                         }
                     }, 1500);
                 } else {
-                    // 初次加载完成
                     rollingNameDiv.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖";
                     initialLoading = false;
                 }
@@ -279,10 +374,10 @@
         });
     }
 
-    // 通用数据修改（非抽奖提交使用）
+    // 通用数据修改
     function applyDataChange(updateFn) {
-        if (isRolling) {
-            alert("抽奖进行中，请稍后操作～");
+        if (isRolling || isCountdownActive) {
+            alert("抽奖或倒计时进行中，请稍后操作～");
             return false;
         }
         updateFn();
@@ -334,62 +429,56 @@
         applyDataChange(() => removeGuestLocal(guestName));
     }
 
-    // 重置：彻底清空并等待云端确认
+    // 重置功能
     async function resetAllUI() {
-        if (isRolling) {
-            if (rollInterval) clearInterval(rollInterval);
-            rollInterval = null;
+        if (isRolling || isCountdownActive) {
+            if (isRolling && rollInterval) clearInterval(rollInterval);
+            if (isCountdownActive) cancelCountdown();
             isRolling = false;
+            isCountdownActive = false;
+            rollInterval = null;
+            countdownInterval = null;
         }
         if (!syncEnabled) {
-            // 未连接云端，直接清空本地
             resetLotteryLocal();
             renderAll();
             rollingNameDiv.innerHTML = "🔄 已重置所有奖项 & 清空候奖池 🔄";
-            setTimeout(() => { if(!isRolling) rollingNameDiv.innerHTML = "💖 点击抽取 💖"; }, 1500);
+            setTimeout(() => { if(!isRolling && !isCountdownActive) rollingNameDiv.innerHTML = "💖 点击抽取 💖"; }, 1500);
             return;
         }
-        // 显示重置中状态
         const originalBtnText = resetBtn.innerHTML;
         resetBtn.innerHTML = "⏳ 重置中...";
         resetBtn.disabled = true;
         try {
-            // 清空本地
             resetLotteryLocal();
             renderAll();
             rollingNameDiv.innerHTML = "🔄 正在同步云端清空... 🔄";
-            // 强制推送到云端并等待完成
             await pushToCloud();
-            // 验证云端是否真的被清空
             const snap = await dbRef.once('value');
             const cloudData = snap.val();
             if (cloudData && (cloudData.currentGuests?.length > 0 || Object.values(cloudData.winners || {}).some(arr => arr?.length > 0))) {
-                // 云端仍有数据，再强制覆盖一次
-                console.warn("第一次重置未完全清空，再次覆盖");
                 await dbRef.set({ currentGuests: [], winners: { top: [], first: [], second: [], third: [], luck: [] } });
-                // 等待一小段时间确保生效
                 await new Promise(r => setTimeout(r, 500));
             }
             rollingNameDiv.innerHTML = "✅ 已重置所有奖项 & 清空候奖池 ✅";
             setTimeout(() => {
-                if (!isRolling) rollingNameDiv.innerHTML = "💖 点击抽取 💖";
+                if (!isRolling && !isCountdownActive) rollingNameDiv.innerHTML = "💖 点击抽取 💖";
             }, 1500);
         } catch (err) {
             console.error("重置同步失败", err);
             rollingNameDiv.innerHTML = "❌ 重置失败，请检查网络后重试 ❌";
             syncStatusTag.innerText = "⚠️ 重置失败";
-            setTimeout(() => {
-                if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步";
-            }, 2000);
+            setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000);
         } finally {
             resetBtn.innerHTML = originalBtnText;
             resetBtn.disabled = false;
         }
     }
 
-    // 抽奖动画+提交
+    // 抽奖动画（原逻辑，无倒计时）
     function startDraw(awardLevel) {
         if (isRolling) return;
+        if (isCountdownActive) return;
         if (currentGuests.length === 0) {
             rollingNameDiv.innerHTML = '🌸 候奖池为空，请先添加来宾 🌸';
             rollingNameDiv.classList.add('winner-flash');
@@ -456,10 +545,17 @@
                 if (currentGuests.length === 0 && !isRolling) {
                     rollingNameDiv.innerHTML = '🏆 所有嘉宾均已中奖 🏆';
                 }
+                setButtonsEnabled(true); // 抽奖结束，恢复按钮
             }
         }, 70);
     }
 
+    // 带倒计时的抽奖入口
+    function drawWithCountdown(awardLevel, seconds, displayName) {
+        startCountdown(awardLevel, seconds, displayName);
+    }
+
+    // 初始化 Firebase
     function initFirebase() {
         if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("DummyKey")) {
             syncStatusTag.innerText = "⚠️ 未配置Firebase";
@@ -474,7 +570,6 @@
             dbRef = database.ref('/weddingLottery');
             syncEnabled = true;
             syncStatusTag.innerText = "☁️ 已连接云端";
-            // 先主动拉取一次数据，再启动监听
             dbRef.once('value').then(snap => {
                 const cloudData = snap.val();
                 if (cloudData) {
@@ -487,7 +582,6 @@
                         luck: cloudData.winners?.luck || []
                     };
                 } else {
-                    // 云端无数据，推送当前本地（初始为空）
                     currentGuests = [];
                     winners = { top: [], first: [], second: [], third: [], luck: [] };
                     pushToCloud();
@@ -495,7 +589,6 @@
                 renderAll();
                 rollingNameDiv.innerHTML = currentGuests.length ? "💖 点击抽取 💖" : "💖 等待添加来宾 💖";
                 initialLoading = false;
-                // 启动实时监听
                 startCloudSync();
             }).catch(e => {
                 console.warn("初次拉取失败", e);
@@ -519,13 +612,13 @@
         }
     });
 
-    drawTopBtn.addEventListener('click', () => startDraw('top'));
-    drawFirstBtn.addEventListener('click', () => startDraw('first'));
-    drawSecondBtn.addEventListener('click', () => startDraw('second'));
+    drawTopBtn.addEventListener('click', () => drawWithCountdown('top', 8, '👑 特等奖'));
+    drawFirstBtn.addEventListener('click', () => drawWithCountdown('first', 5, '🏆 一等奖'));
+    drawSecondBtn.addEventListener('click', () => drawWithCountdown('second', 3, '🎀 二等奖'));
     drawThirdBtn.addEventListener('click', () => startDraw('third'));
     drawLuckBtn.addEventListener('click', () => startDraw('luck'));
     addGuestBtn.addEventListener('click', () => {
-        if (isRolling) { alert("抽奖动画进行中，请稍后再添加来宾～"); return; }
+        if (isRolling || isCountdownActive) { alert("抽奖或倒计时进行中，请稍后再添加来宾～"); return; }
         const overlay = document.createElement('div');
         overlay.className = 'custom-prompt-overlay';
         overlay.innerHTML = `
