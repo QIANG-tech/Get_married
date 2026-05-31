@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>❤️ 臻爱婚礼 · 幸运抽奖系统 ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* 避免抽奖时选中文字，提升体验 */
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #fff5f7 0%, #ffe6ed 100%);
+            font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 浪漫花瓣飘落效果 (点缀) */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: radial-gradient(circle at 20% 40%, rgba(255, 200, 210, 0.2) 2%, transparent 2.5%),
+                              radial-gradient(circle at 80% 70%, rgba(255, 180, 190, 0.2) 1.8%, transparent 2.2%);
+            background-size: 55px 55px, 70px 70px;
+            z-index: 0;
+        }
+
+        /* 主容器 */
+        .wedding-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 248, 250, 0.85);
+            backdrop-filter: blur(3px);
+            border-radius: 68px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+            overflow: hidden;
+            padding: 30px 25px 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 标题区 */
+        .title-section {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .title-section h1 {
+            font-size: 2.6rem;
+            background: linear-gradient(135deg, #c44569, #e66767, #f5b0b0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-weight: 700;
+        }
+        .sub {
+            font-size: 1.1rem;
+            color: #b45f6b;
+            background: rgba(255,240,243,0.7);
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 60px;
+            margin-top: 12px;
+            backdrop-filter: blur(2px);
+            font-weight: 500;
+        }
+        .heart-icon {
+            display: inline-block;
+            animation: heartbeat 1.2s infinite ease;
+            margin: 0 6px;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.18); }
+        }
+
+        /* 抽奖核心区域 */
+        .lottery-card {
+            background: #ffffffdd;
+            backdrop-filter: blur(12px);
+            border-radius: 60px;
+            padding: 20px 15px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 35px -15px rgba(0, 0, 0, 0.1), 0 0 0 1px #ffe4eb inset;
+            transition: all 0.2s;
+        }
+        .draw-area {
+            text-align: center;
+        }
+        .draw-name-box {
+            background: linear-gradient(145deg, #ffeff4, #ffe2ea);
+            border-radius: 70px;
+            padding: 25px 12px;
+            margin: 10px 20px;
+            box-shadow: 0 8px 20px rgba(196, 87, 112, 0.15);
+            transition: all 0.2s;
+        }
+        .draw-label {
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            color: #c06a79;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        .rolling-name {
+            font-size: 3.3rem;
+            font-weight: 800;
+            background: linear-gradient(120deg, #b83b5e, #e76f8c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            min-height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
+            padding: 10px;
+            transition: 0.2s;
+            text-shadow: 0 2px 5px #ffcdd9;
+        }
+        @keyframes glowPulse {
+            0% { text-shadow: 0 0 0px #ffb6c1; }
+            100% { text-shadow: 0 0 18px #ff99aa; }
+        }
+        .winner-flash {
+            animation: glowPulse 0.3s ease-in-out 3;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 25px 0 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            border: none;
+            padding: 12px 32px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(95deg, #e66767, #d9536e);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 18px #e6676766;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 22px #e6676799;
+            background: linear-gradient(95deg, #f07a7a, #e9637e);
+        }
+        .btn-secondary {
+            background: #f5e1e6;
+            color: #a5455c;
+            border: 1px solid #ffcfdb;
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background: #ffe3eb;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(0.05);
+        }
+
+        /* 左右信息栏 (宾客池 & 中奖池) */
+        .info-panels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            margin-top: 20px;
+        }
+        .panel {
+            flex: 1;
+            min-width: 240px;
+            background: rgba(255, 250, 252, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 20px 18px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ffdce5;
+        }
+        .panel h3 {
+            font-size: 1.4rem;
+            color: #bc6f80;
+            border-left: 6px solid #f5a3b9;
+            padding-left: 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .badge-count {
+            background: #f7cad5;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #a13e56;
+        }
+        .guest-list, .winner-list {
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .guest-item, .winner-item {
+            background: #fff0f4;
+            margin: 8px 0;
+            padding: 10px 16px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #4b2d34;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.1s;
+            border: 1px solid #ffe2ea;
+        }
+        .winner-item {
+            background: linear-gradient(105deg, #fff0e7, #ffe3e8);
+            border-left: 6px solid #f3a683;
+            font-weight: 600;
+            color: #b1465f;
+        }
+        .guest-item::before {
+            content: "💐";
+            font-size: 1rem;
+        }
+        .winner-item::before {
+            content: "🏆";
+            font-size: 1.1rem;
+        }
+        .empty-tip {
+            color: #c593a0;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+        }
+        /* 滚动条美观 */
+        .guest-list::-webkit-scrollbar, .winner-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .guest-list::-webkit-scrollbar-track {
+            background: #ffe2e9;
+            border-radius: 10px;
+        }
+        .guest-list::-webkit-scrollbar-thumb {
+            background: #e09eaf;
+            border-radius: 10px;
+        }
+
+        /* 奖品装饰区域 */
+        .prize-show {
+            background: #feeef3;
+            border-radius: 50px;
+            margin-top: 35px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #b1586e;
+            font-weight: 500;
+        }
+        .prize-show span {
+            background: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        footer {
+            text-align: center;
+            margin-top: 35px;
+            font-size: 0.75rem;
+            color: #cd8b9b;
+        }
+
+        @media (max-width: 780px) {
+            .wedding-container {
+                padding: 20px 16px;
+            }
+            .rolling-name {
+                font-size: 2.2rem;
+                min-height: 100px;
+            }
+            .btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            .title-section h1 {
+                font-size: 1.8rem;
+            }
+        }
+        @media (max-width: 550px) {
+            .rolling-name {
+                font-size: 1.8rem;
+            }
+            .button-group {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="wedding-container">
+    <div class="title-section">
+        <h1>✨ 挚爱·锦鲤抽奖 ✨</h1>
+        <div class="sub">
+            <span class="heart-icon">❤️</span> 新郎 李铭轩 & 新娘 陈语棠 敬谢来宾 <span class="heart-icon">❤️</span>
+        </div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color:#e28ca3;">—— 幸运相逢，浪漫礼赠 ——</div>
+    </div>
+
+    <!-- 抽奖核心区 -->
+    <div class="lottery-card">
+        <div class="draw-area">
+            <div class="draw-name-box">
+                <div class="draw-label">🎁 今日幸运之星 🎁</div>
+                <div class="rolling-name" id="rollingName">💖 幸福待启 💖</div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-primary" id="drawBtn">🎲 抽取幸运宾客 🎲</button>
+                <button class="btn btn-secondary" id="resetBtn">🔄 重置抽奖池</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 左右信息展示区 -->
+    <div class="info-panels">
+        <!-- 剩余抽奖池 (未中奖) -->
+        <div class="panel">
+            <h3>🌸 幸福候奖池 <span class="badge-count" id="remainCount">0</span></h3>
+            <div class="guest-list" id="guestListContainer">
+                <!-- 动态渲染宾客名单 -->
+                <div class="empty-tip">加载名单中...</div>
+            </div>
+        </div>
+        <!-- 已中奖幸运星列表 -->
+        <div class="panel">
+            <h3>🏅 中奖荣耀榜 🏅</h3>
+            <div class="winner-list" id="winnerListContainer">
+                <div class="empty-tip">暂无中奖者，点击抽取～</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 奖品装饰 & 祝福 -->
+    <div class="prize-show">
+        <span>🎁 特等奖：双人海岛蜜月套餐</span>
+        <span>💎 一等奖：对戒臻选礼盒</span>
+        <span>🍾 二等奖：珍藏红酒礼盒</span>
+        <span>🌸 三等奖：高端喜糖礼篮</span>
+        <span>🍬 幸运奖：精美伴手礼</span>
+    </div>
+    <footer>💒 每抽出一位幸运来宾，都会送上我们的真挚祝福 · 愿喜乐长存 💒</footer>
+</div>
+
+<script>
+    // ---------- 🌸 浪漫宾客名单 (婚礼亲友团) 🌸 ----------
+    const ORIGINAL_GUESTS = [
+        "王德福 先生 & 夫人", "李婉清 小姐", "陈嘉豪 先生", "周敏华 女士", "赵俊杰 夫妇",
+        "孙若曦 女士", "林志远 先生", "郭雨桐 小姐", "唐雅琳 女士", "徐宏宇 先生",
+        "宋美琪 小姐", "吴子涵 先生", "郑欣怡 女士", "沈佳宜 闺蜜团", "陆一鸣 伴郎",
+        "张瑞华 阿姨", "高天宇 挚友", "黄思琪 伴娘", "刘俊辉 先生", "方雅静 女士",
+        "曾志强 先生", "林晓彤 表妹", "苏子川 兄弟", "崔雪儿 女士"
+    ];   // 共24位温馨宾客，抽奖更有趣
+
+    // 应用状态
+    let currentGuests = [];     // 未中奖的宾客列表 (抽奖池)
+    let winnersList = [];       // 已中奖宾客列表 (顺序存储)
+    let isRolling = false;      // 是否正在抽奖动画中
+    let rollInterval = null;    // 定时器id
+    let rollCount = 0;
+    const MAX_ROLL_FRAMES = 18;  // 滚动变换次数
+
+    // DOM 元素
+    const rollingNameDiv = document.getElementById('rollingName');
+    const drawBtn = document.getElementById('drawBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const guestListContainer = document.getElementById('guestListContainer');
+    const winnerListContainer = document.getElementById('winnerListContainer');
+    const remainCountSpan = document.getElementById('remainCount');
+
+    // 辅助函数：渲染左右两侧UI (宾客池 + 中奖池)
+    function renderPanels() {
+        // 渲染未中奖池 (剩余抽奖池)
+        if (currentGuests.length === 0) {
+            guestListContainer.innerHTML = '<div class="empty-tip">🍂 所有宾客都已幸运中奖啦！重置后可继续抽取 🍂</div>';
+        } else {
+            const guestHtml = currentGuests.map(guest => `<div class="guest-item">${escapeHtml(guest)}</div>`).join('');
+            guestListContainer.innerHTML = guestHtml;
+        }
+        // 渲染中奖名单列表
+        if (winnersList.length === 0) {
+            winnerListContainer.innerHTML = '<div class="empty-tip">✨ 暂无幸运星，快点击抽取吧 ✨</div>';
+        } else {
+            const winnerHtml = winnersList.map((winner, idx) => `<div class="winner-item">🎉 ${escapeHtml(winner)}  🎉</div>`).join('');
+            winnerListContainer.innerHTML = winnerHtml;
+        }
+        // 更新剩余人数徽章
+        remainCountSpan.innerText = currentGuests.length;
+    }
+
+    // 简易防XSS
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // 重置所有数据 (清空winner，恢复全部宾客)
+    function resetLottery() {
+        // 如果正在抽奖动画，强制终止动画
+        if (isRolling) {
+            if (rollInterval) {
+                clearInterval(rollInterval);
+                rollInterval = null;
+            }
+            isRolling = false;
+            drawBtn.disabled = false;
+        }
+        // 重置数组: 深拷贝原始名单
+        currentGuests = [...ORIGINAL_GUESTS];
+        winnersList = [];
+        // 重置抽奖显示区文字
+        rollingNameDiv.innerHTML = '💖 幸福待启 💖';
+        rollingNameDiv.classList.remove('winner-flash');
+        // 重新渲染两个面板
+        renderPanels();
+        // 保证抽奖按钮可用 (如果人数为0才禁用, 重置后肯定有>0)
+        drawBtn.disabled = false;
+    }
+
+    // 抽奖结束时执行的逻辑 (抽中某人后更新数据)
+    function finishDrawAndUpdate(winnerName) {
+        if (!winnerName) {
+            // 理论上不可能，但安全处理
+            if (rollInterval) clearInterval(rollInterval);
+            isRolling = false;
+            drawBtn.disabled = false;
+            return;
+        }
+        // 检查winner是否还在currentGuests中 (防止并发或reset导致冲突)
+        const indexInCurrent = currentGuests.indexOf(winnerName);
+        if (indexInCurrent !== -1) {
+            // 从未中奖池中移除该宾客
+            currentGuests.splice(indexInCurrent, 1);
+            // 添加进中奖列表
+            winnersList.push(winnerName);
+            // 更新UI
+            renderPanels();
+            // 抽奖面板显示最终中奖者，并增加闪光特效
+            rollingNameDiv.innerHTML = `🎉 ${escapeHtml(winnerName)} 🎉`;
+            rollingNameDiv.classList.add('winner-flash');
+            setTimeout(() => {
+                rollingNameDiv.classList.remove('winner-flash');
+            }, 600);
+        } else {
+            // 极少数情况：重置刚好发生在动画最后一帧前，winner已经被移除 -> 不重复处理，只是显示错误保护
+            // 防止抽到已中奖的人 刷新UI就行，直接显示原抽奖面板文字，但提示不要重复
+            rollingNameDiv.innerHTML = '✨ 请重置后继续抽奖 ✨';
+            console.warn("重复抽取或名单不一致，已保护");
+        }
+        // 抽奖结束标志清理
+        if (rollInterval) {
+            clearInterval(rollInterval);
+            rollInterval = null;
+        }
+        isRolling = false;
+        drawBtn.disabled = false;
+
+        // 如果抽奖池已空，禁用抽奖按钮并显示温馨提醒
+        if (currentGuests.length === 0) {
+            drawBtn.disabled = true;
+            rollingNameDiv.innerHTML = '🏆 所有嘉宾均已中奖 🏆';
+        }
+    }
+
+    // 开始抽奖动画 (随机滚动名字，最后定格真实winner)
+    function startDraw() {
+        // 禁止重复抽奖 & 抽奖池未空 && 不在动画中
+        if (isRolling) {
+            return;
+        }
+        if (currentGuests.length === 0) {
+            // 抽奖池为空提醒
+            rollingNameDiv.innerHTML = '🌸 无人可抽，请重置 🌸';
+            rollingNameDiv.classList.add('winner-flash');
+            setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 500);
+            drawBtn.disabled = true;
+            return;
+        }
+
+        // 1. 随机决定本次真正的中奖者 (从当前未中奖列表里抽取)
+        const randomIndex = Math.floor(Math.random() * currentGuests.length);
+        const finalWinner = currentGuests[randomIndex];
+        if (!finalWinner) return;
+
+        // 2. 开始滚动抽奖动画
+        isRolling = true;
+        drawBtn.disabled = true;   // 抽奖时禁止再次点击
+        rollCount = 0;
+
+        // 清除已有定时器确保唯一
+        if (rollInterval) clearInterval(rollInterval);
+        
+        // 滚动显示随机名字 (从 currentGuests 里随机挑选展示)
+        rollInterval = setInterval(() => {
+            if (!isRolling) {
+                // 安全清理
+                if (rollInterval) clearInterval(rollInterval);
+                return;
+            }
+            // 随机抽取一个当前抽奖池里的名字显示（营造滚动效果）
+            if (currentGuests.length > 0) {
+                const randomShowIndex = Math.floor(Math.random() * currentGuests.length);
+                const showName = currentGuests[randomShowIndex];
+                rollingNameDiv.innerHTML = escapeHtml(showName);
+            } else {
+                // 如果抽奖池在滚动时意外变空（重置打断等情况），停止动画
+                if (rollInterval) clearInterval(rollInterval);
+                isRolling = false;
+                drawBtn.disabled = false;
+                rollingNameDiv.innerHTML = '💗 来宾已空，重置再抽 💗';
+                return;
+            }
+            rollCount++;
+            // 达到最大滚动帧数，结束动画并确定中奖者
+            if (rollCount >= MAX_ROLL_FRAMES) {
+                clearInterval(rollInterval);
+                rollInterval = null;
+                // 动画完成，调用最终中奖更新 (传入之前决定的finalWinner)
+                // 但需要再验证一下finalWinner目前是否还在currentGuests中（重置可能导致消失）
+                if (currentGuests.includes(finalWinner)) {
+                    finishDrawAndUpdate(finalWinner);
+                } else {
+                    // 如果重置发生在动画期间导致finalWinner无效，则终止本次抽奖，且不改变数组，恢复按钮
+                    rollingNameDiv.innerHTML = '🕊️ 抽奖已重置，请重新抽取 🕊️';
+                    isRolling = false;
+                    drawBtn.disabled = false;
+                    renderPanels(); // 刷新一下UI确保准确
+                    // 额外检查如果currentGuests.length>0才启用按钮
+                    if (currentGuests.length === 0) drawBtn.disabled = true;
+                }
+            }
+        }, 70); // 每70ms变化一次，大约 18*70 ≈ 1.26秒，舒适动效
+    }
+
+    // 增强重置并且保证动画完全终止
+    function safeReset() {
+        // 强行终止任何进行中的抽奖动画
+        if (rollInterval) {
+            clearInterval(rollInterval);
+            rollInterval = null;
+        }
+        isRolling = false;
+        // 重置所有数据
+        resetLottery();
+        // 确保按钮状态正确
+        if (currentGuests.length === 0) {
+            drawBtn.disabled = true;
+        } else {
+            drawBtn.disabled = false;
+        }
+        // 如果抽奖池不为空，显示默认祝福语
+        rollingNameDiv.innerHTML = '💖 幸福待启 💖';
+        rollingNameDiv.classList.remove('winner-flash');
+    }
+
+    // 绑定事件与初始化
+    function init() {
+        resetLottery();  // 初始填充数据
+        drawBtn.addEventListener('click', startDraw);
+        resetBtn.addEventListener('click', safeReset);
+        // 附加优雅禁用右键菜单（可选，防止意外刷新干扰，但保留正常的交互）
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.closest('.wedding-container')) {
+                // 仅阻止抽奖区域的右键，不干扰全页面(便于调试)
+                // 这里不强制，尊重用户体验，但无伤大雅
+            }
+        });
+    }
+
+    // 页面启动
+    init();
+</script>
+</body>
+</html>
