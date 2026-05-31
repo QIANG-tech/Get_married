@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>❤️ 臻爱婚礼 · 云端同步抽奖系统 ❤️</title>
-    <!-- Firebase SDK (模块化风格，使用兼容CDN) -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
@@ -512,30 +512,20 @@
 </div>
 
 <script>
-    // --------------------------------------------------------------
-    //  🔥 Firebase 配置 (请替换为您自己的Firebase项目配置)
-    //  使用教程:
-    //  1. 登录 https://console.firebase.google.com/ 创建项目
-    //  2. 添加Web应用，复制配置对象
-    //  3. 启用“实时数据库”(Realtime Database)，选择“测试模式”(允许读写)
-    //  4. 将下方 firebaseConfig 替换为您自己的配置
-    // --------------------------------------------------------------
+    // ==================== Firebase 配置 (已替换为您的真实配置) ====================
     const firebaseConfig = {
-  	apiKey: "AIzaSyCTD7c_G3mErpYUjlLDYNl1PJVj8TCV04g",
-  	authDomain: "myweddinglottery.firebaseapp.com",
-  	databaseURL: "https://myweddinglottery-default-rtdb.firebaseio.com",
-  	projectId: "myweddinglottery",
- 	storageBucket: "myweddinglottery.firebasestorage.app",
-  	messagingSenderId: "685782459832",
-  	appId: "1:685782459832:web:6c6ed8b6fe806be5419b4d",
-  	measurementId: "G-M5MEQVKLDS"
+        apiKey: "AIzaSyCTD7c_G3mErpYUjlLDYNl1PJVj8TCV04g",
+        authDomain: "myweddinglottery.firebaseapp.com",
+        databaseURL: "https://myweddinglottery-default-rtdb.firebaseio.com",
+        projectId: "myweddinglottery",
+        storageBucket: "myweddinglottery.firebasestorage.app",
+        messagingSenderId: "685782459832",
+        appId: "1:685782459832:web:6c6ed8b6fe806be5419b4d",
+        measurementId: "G-M5MEQVKLDS"
     };
-    // 说明: 为了方便演示，以上为占位配置，实际部署前请替换成您自己Firebase项目的真实配置！！
-    // 如果未正确配置，页面会提示错误并降级为本地单机模式(不会跨设备同步)，请务必按注释完成配置。
 
     let database = null;
     let dbRef = null;
-    let isFirebaseReady = false;
     let syncEnabled = false;
 
     // 全局数据
@@ -586,7 +576,7 @@
         });
     }
 
-    // 渲染全部UI (基于内存数据)
+    // 渲染全部UI
     function renderAll() {
         // 候奖池渲染
         if (currentGuests.length === 0) {
@@ -635,7 +625,7 @@
         }
     }
 
-    // 将完整状态推送到Firebase (仅当同步开启时)
+    // 将完整状态推送到Firebase
     function pushToCloud() {
         if (!syncEnabled || !dbRef) return;
         const fullData = { currentGuests, winners };
@@ -662,32 +652,28 @@
             }, 1500);
             pendingWinner = null;
             pendingAward = null;
-            renderAll();  // 刷新按钮状态
+            renderAll();
         }
     }
 
-    // 监听云端变化 (核心同步)
+    // 监听云端变化
     function startCloudSync() {
         if (!dbRef) return;
         dbRef.on('value', (snapshot) => {
             const cloudData = snapshot.val();
             if (!cloudData) {
-                // 云端无数据，初始化为空 (但保留当前内存，不覆盖, 如果内存也有数据则上传)
                 if (currentGuests.length === 0 && Object.values(winners).every(arr => arr.length === 0)) {
-                    // 首次完全空，不做改变
+                    // 双方都为空，无事
                 } else {
-                    // 本地有数据，将本地上传至云端
                     pushToCloud();
                 }
                 return;
             }
-            // 云端有数据，比较是否与本地一致 (避免回环)
             const newGuests = cloudData.currentGuests || [];
             const newWinners = cloudData.winners || { top: [], first: [], second: [], third: [], luck: [] };
             const isEqual = (JSON.stringify(currentGuests) === JSON.stringify(newGuests) &&
                              JSON.stringify(winners) === JSON.stringify(newWinners));
             if (!isEqual) {
-                // 云端数据与本地不同，进行同步 (且如果正在抽奖则中断)
                 abortRollingIfNeeded("🎈 其他设备更新了名单");
                 currentGuests = [...newGuests];
                 winners = {
@@ -712,7 +698,7 @@
         });
     }
 
-    // 修改数据后统一调用: 更新内存+推送到云+渲染
+    // 通用修改数据：更新内存+渲染+推云，但会检查 isRolling
     function applyDataChange(updateFn) {
         if (isRolling) {
             alert("抽奖进行中，请稍后操作～");
@@ -724,7 +710,7 @@
         return true;
     }
 
-    // 单个操作封装
+    // 本地操作函数 (不涉及云端推送)
     function addGuestLocal(name) {
         if (!name || name.trim() === "") return false;
         const trimmed = name.trim();
@@ -759,7 +745,7 @@
         return true;
     }
 
-    // 对外操作：添加来宾
+    // UI 操作入口
     function addGuestUI(name) {
         applyDataChange(() => addGuestLocal(name));
     }
@@ -778,7 +764,7 @@
         setTimeout(() => { if(!isRolling) rollingNameDiv.innerHTML = "💖 点击抽取 💖"; }, 1500);
     }
 
-    // 抽奖动画+最终提交
+    // 抽奖动画 + 提交 (修复版)
     function startDraw(awardLevel) {
         if (isRolling) return;
         if (currentGuests.length === 0) {
@@ -788,7 +774,6 @@
             return;
         }
 
-        // 随机选出最终中奖者
         const randomIndex = Math.floor(Math.random() * currentGuests.length);
         const finalWinner = currentGuests[randomIndex];
         if (!finalWinner) return;
@@ -797,6 +782,7 @@
         isRolling = true;
         rollCount = 0;
         renderAll(); // 禁用按钮
+
         if (rollInterval) clearInterval(rollInterval);
         rollInterval = setInterval(() => {
             if (!isRolling) {
@@ -808,6 +794,7 @@
                 rollingNameDiv.innerHTML = escapeHtml(currentGuests[showIndex]);
             } else {
                 clearInterval(rollInterval);
+                rollInterval = null;
                 isRolling = false;
                 renderAll();
                 rollingNameDiv.innerHTML = '💗 来宾已空，无法完成抽奖 💗';
@@ -819,10 +806,16 @@
             if (rollCount >= MAX_ROLL_FRAMES) {
                 clearInterval(rollInterval);
                 rollInterval = null;
-                // 最终确认提交
+                // 关键修复：先关闭抽奖标志，再提交，避免被 applyDataChange 拦截
+                isRolling = false;
+                let commitSuccess = false;
                 if (pendingWinner && pendingAward && currentGuests.includes(pendingWinner)) {
-                    const success = applyDataChange(() => commitDrawLocal(pendingWinner, pendingAward));
-                    if (success) {
+                    // 直接执行本地提交，不经过 applyDataChange 的 isRolling 检查
+                    const localSuccess = commitDrawLocal(pendingWinner, pendingAward);
+                    if (localSuccess) {
+                        commitSuccess = true;
+                        renderAll();               // 更新界面
+                        if (syncEnabled) pushToCloud(); // 同步到云端
                         rollingNameDiv.innerHTML = `🎉 ${escapeHtml(pendingWinner)} 🎉`;
                         rollingNameDiv.classList.add('winner-flash');
                         setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 600);
@@ -834,10 +827,13 @@
                 } else {
                     rollingNameDiv.innerHTML = '🕊️ 抽奖失败，请重新抽取 🕊️';
                 }
-                isRolling = false;
+                // 清理暂存
                 pendingWinner = null;
                 pendingAward = null;
-                renderAll();
+                // 如果提交失败，需要确保按钮状态正确（renderAll 可能已在上面调用过，但再调用一次确保）
+                if (!commitSuccess) {
+                    renderAll();
+                }
                 if (currentGuests.length === 0 && !isRolling) {
                     rollingNameDiv.innerHTML = '🏆 所有嘉宾均已中奖 🏆';
                 }
@@ -845,7 +841,7 @@
         }, 70);
     }
 
-    // 初始化Firebase并启动
+    // 初始化 Firebase
     function initFirebase() {
         if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("DummyKey")) {
             syncStatusTag.innerText = "⚠️ 未配置Firebase";
@@ -860,12 +856,9 @@
             dbRef = database.ref('/weddingLottery');
             syncEnabled = true;
             syncStatusTag.innerText = "☁️ 已连接云端";
-            // 先监听云端 (一旦有数据就会同步)
             startCloudSync();
-            // 主动拉取一次当前云端数据，避免空白等待
             dbRef.once('value').then(snap => {
                 if (!snap.exists()) {
-                    // 云端无任何数据，推送当前本地(若无数据则推送空结构)
                     pushToCloud();
                 }
                 renderAll();
@@ -925,7 +918,7 @@
     });
     resetBtn.addEventListener('click', () => { if (confirm("⚠️ 重置将清空所有奖项和候奖池，且会同步到所有设备，确定吗？")) resetAllUI(); });
 
-    // 启动 (若firebase未配好，单机可用但无同步)
+    // 启动
     initFirebase();
 </script>
 </body>
