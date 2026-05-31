@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>❤️ 臻爱婚礼 · 云端同步抽奖系统（倒计时滚动抽奖）❤️</title>
+    <title>❤️ 臻爱婚礼 · 云端同步抽奖系统（一等奖优先中奖）❤️</title>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
@@ -19,7 +19,7 @@
         <div class="sub">
             <span class="heart-icon">❤️</span> 新郎 陈顺强 & 新娘 李建 敬谢来宾 <span class="heart-icon">❤️</span>
         </div>
-        <div style="margin-top: 8px; font-size: 0.85rem; color:#e28ca3;">—— 跨设备实时同步 · 全自动云端存储 ——</div>
+        <div style="margin-top: 8px; font-size: 0.85rem; color:#e28ca3;">—— 跨设备实时同步 · 一等奖首次必中“祝永煌” ——</div>
     </div>
 
     <div class="lottery-card">
@@ -114,15 +114,14 @@
     };
 
     // 倒计时+滚动状态
-    let activeCountdown = false;      // 是否倒计时中
-    let countdownTimer = null;        // 倒计时定时器
-    let rollingTimer = null;          // 滚动名字定时器
+    let activeCountdown = false;
+    let countdownTimer = null;
+    let rollingTimer = null;
     let remainingSeconds = 0;
-    let currentAward = null;          // 当前正在进行的奖项 'top', 'first'...
+    let currentAward = null;          // 'top', 'first', 'second', 'third', 'luck'
     let currentAwardDisplayName = '';
     let lastRolledName = '';          // 最后一次滚动的名字
 
-    // 普通操作锁（例如添加宾客、重置）
     let isProcessing = false;
 
     // DOM 元素
@@ -149,12 +148,14 @@
     const luckCountSpan = document.getElementById('luckCount');
     const syncStatusTag = document.getElementById('syncStatusTag');
 
+    // 特殊宾客姓名（一等奖优先中奖者）
+    const SPECIAL_GUEST = "祝永煌";
+
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
     }
 
-    // 禁用/启用所有操作按钮（倒计时中或重置时）
     function setButtonsEnabled(enabled) {
         const btns = [drawTopBtn, drawFirstBtn, drawSecondBtn, drawThirdBtn, drawLuckBtn, addGuestBtn, resetBtn];
         btns.forEach(btn => { if (btn) btn.disabled = !enabled; });
@@ -170,7 +171,6 @@
         }
     }
 
-    // 停止所有倒计时和滚动
     function cancelCurrentCountdown(resetRollingName = true) {
         if (countdownTimer) {
             clearInterval(countdownTimer);
@@ -193,7 +193,6 @@
         }
     }
 
-    // 渲染所有界面（候奖池、奖项列表、按钮状态）
     function renderAll() {
         if (currentGuests.length === 0) {
             guestListContainer.innerHTML = '<div class="empty-tip">🌸 候奖池暂无来宾，请点击“添加入场来宾” 🌸</div>';
@@ -235,7 +234,6 @@
         }
     }
 
-    // 推送到云端
     function pushToCloud() {
         if (!syncEnabled || !dbRef) return Promise.resolve();
         isLocalUpdating = true;
@@ -251,7 +249,6 @@
         });
     }
 
-    // 完成抽奖：提交中奖结果
     async function commitWinner(winner, awardLevel) {
         const idx = currentGuests.indexOf(winner);
         if (idx === -1) return false;
@@ -266,11 +263,9 @@
         return true;
     }
 
-    // 倒计时结束后的抽奖逻辑
+    // 倒计时结束后的抽奖逻辑（包含一等奖优先规则）
     async function finishCountdownDraw() {
-        // 确保还在倒计时状态且没有被取消
         if (!activeCountdown) return;
-        // 停止滚动和倒计时
         if (rollingTimer) clearInterval(rollingTimer);
         if (countdownTimer) clearInterval(countdownTimer);
         rollingTimer = null;
@@ -282,14 +277,27 @@
         currentAward = null;
         currentAwardDisplayName = '';
 
-        // 获取最后一次滚动的名字（如果存在且还在候奖池中，则以此为中奖者；否则随机选一个）
         let finalWinner = null;
-        if (lastRolledName && currentGuests.includes(lastRolledName)) {
-            finalWinner = lastRolledName;
-        } else if (currentGuests.length > 0) {
-            const randomIndex = Math.floor(Math.random() * currentGuests.length);
-            finalWinner = currentGuests[randomIndex];
+
+        // 一等奖优先规则：如果奖项是一等奖 且 候奖池中存在 SPECIAL_GUEST 且 一等奖中奖名单中还没有 SPECIAL_GUEST
+        if (award === 'first') {
+            const hasSpecial = currentGuests.includes(SPECIAL_GUEST);
+            const alreadyWon = winners.first.includes(SPECIAL_GUEST);
+            if (hasSpecial && !alreadyWon) {
+                finalWinner = SPECIAL_GUEST;
+            }
         }
+
+        // 如果没有通过优先规则确定中奖者，则使用最后一次滚动的名字（如果还在池中）或随机选取
+        if (!finalWinner) {
+            if (lastRolledName && currentGuests.includes(lastRolledName)) {
+                finalWinner = lastRolledName;
+            } else if (currentGuests.length > 0) {
+                const randomIndex = Math.floor(Math.random() * currentGuests.length);
+                finalWinner = currentGuests[randomIndex];
+            }
+        }
+
         if (!finalWinner) {
             rollingNameText.innerHTML = '🌸 候奖池为空，无法抽奖 🌸';
             rollingCountdownSpan.innerHTML = '';
@@ -297,7 +305,6 @@
             return;
         }
 
-        // 提交中奖
         const success = await commitWinner(finalWinner, award);
         if (!success) {
             rollingNameText.innerHTML = '❌ 抽奖失败，请重试 ❌';
@@ -311,10 +318,8 @@
         }
     }
 
-    // 滚动名字（随机显示候奖池中的人名）
     function updateRollingName() {
         if (currentGuests.length === 0) {
-            // 候奖池为空，终止抽奖
             cancelCurrentCountdown(true);
             rollingNameText.innerHTML = '🌸 候奖池为空，抽奖取消 🌸';
             setButtonsEnabled(true);
@@ -330,7 +335,6 @@
         }
     }
 
-    // 开始倒计时+滚动抽奖
     function startCountdownDraw(awardLevel, seconds, displayName) {
         if (activeCountdown) {
             alert("已有抽奖倒计时进行中，请稍后再试～");
@@ -342,20 +346,17 @@
             setTimeout(() => rollingNameText.classList.remove('winner-flash'), 500);
             return false;
         }
-        // 清空可能残留的动画
         cancelCurrentCountdown(false);
         activeCountdown = true;
         currentAward = awardLevel;
         currentAwardDisplayName = displayName;
         remainingSeconds = seconds;
-        // 立即显示一个随机名字
         const initIndex = Math.floor(Math.random() * currentGuests.length);
         lastRolledName = currentGuests[initIndex];
         rollingNameText.innerHTML = escapeHtml(lastRolledName);
         rollingCountdownSpan.innerHTML = `⏰ 倒计时 ${remainingSeconds} 秒 ⏰`;
-        setButtonsEnabled(false);  // 禁用所有操作
+        setButtonsEnabled(false);
 
-        // 启动滚动定时器（每 80ms 更换一个名字）
         rollingTimer = setInterval(() => {
             if (!activeCountdown) {
                 if (rollingTimer) clearInterval(rollingTimer);
@@ -364,7 +365,6 @@
             updateRollingName();
         }, 80);
 
-        // 启动倒计时定时器（每秒更新剩余时间）
         countdownTimer = setInterval(() => {
             if (!activeCountdown) {
                 if (countdownTimer) clearInterval(countdownTimer);
@@ -372,7 +372,6 @@
             }
             remainingSeconds--;
             if (remainingSeconds <= 0) {
-                // 倒计时结束，完成抽奖
                 clearInterval(countdownTimer);
                 countdownTimer = null;
                 clearInterval(rollingTimer);
@@ -385,7 +384,6 @@
         return true;
     }
 
-    // 中断当前操作（云端同步时调用）
     function abortCurrentAction(reason = "云端数据更新") {
         if (activeCountdown) {
             cancelCurrentCountdown(true);
@@ -399,7 +397,6 @@
         }
     }
 
-    // 监听云端变化
     function startCloudSync() {
         if (!dbRef) return;
         dbRef.on('value', (snapshot) => {
@@ -451,7 +448,6 @@
         });
     }
 
-    // 通用数据修改（添加来宾、删除、重置时使用）
     function applyDataChange(updateFn) {
         if (activeCountdown) {
             alert("抽奖倒计时进行中，请稍后操作～");
@@ -473,7 +469,6 @@
         return true;
     }
 
-    // 本地操作函数
     function addGuestLocal(name) {
         if (!name || name.trim() === "") return false;
         const trimmed = name.trim();
@@ -550,7 +545,6 @@
         }
     }
 
-    // 初始化 Firebase
     function initFirebase() {
         if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("DummyKey")) {
             syncStatusTag.innerText = "⚠️ 未配置Firebase";
