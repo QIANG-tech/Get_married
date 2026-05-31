@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>❤️ 臻爱婚礼 · 五重幸运抽奖（动态签到版）❤️</title>
+    <title>❤️ 臻爱婚礼 · 五重幸运抽奖（自动保存版）❤️</title>
     <style>
         * {
             margin: 0;
@@ -463,7 +463,7 @@
                 <span class="badge-count" id="remainCount">0</span>
             </h3>
             <div class="guest-list" id="guestListContainer">
-                <div class="empty-tip">暂无来宾，请点击“添加入场来宾”或刷新页面输入姓名</div>
+                <div class="empty-tip">暂无来宾，请点击“添加入场来宾”</div>
             </div>
         </div>
 
@@ -499,11 +499,14 @@
         <span>🌸 三等奖：高端喜糖礼篮</span>
         <span>🍬 幸运奖：定制伴手礼套装</span>
     </div>
-    <footer>💒 每位宾客仅可中奖一次 · 祝您幸运满载 💒</footer>
+    <footer>💒 每位宾客仅可中奖一次 · 数据自动保存在本设备中 💒</footer>
 </div>
 
 <script>
-    // ---------- 完全动态的宾客池（无预设名单） ----------
+    // ---------- 持久化存储 key ----------
+    const STORAGE_KEY = 'wedding_lottery_data';
+
+    // ---------- 全局状态 ----------
     let currentGuests = [];          // 未中奖的宾客（抽奖池）
     let winners = {
         top: [],     // 特等奖
@@ -517,7 +520,7 @@
     let rollInterval = null;
     let rollCount = 0;
     const MAX_ROLL_FRAMES = 18;
-    let pendingAward = null;         // 'top', 'first', 'second', 'third', 'luck'
+    let pendingAward = null;
     let pendingWinner = null;
 
     // DOM 元素
@@ -542,6 +545,7 @@
     const thirdCountSpan = document.getElementById('thirdCount');
     const luckCountSpan = document.getElementById('luckCount');
 
+    // ---------- 辅助函数 ----------
     function escapeHtml(str) {
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
@@ -551,6 +555,50 @@
         });
     }
 
+    // 保存数据到 localStorage
+    function saveToLocalStorage() {
+        const data = {
+            currentGuests: currentGuests,
+            winners: winners
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    // 从 localStorage 加载数据，返回是否成功加载了非空数据
+    function loadFromLocalStorage() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        try {
+            const data = JSON.parse(raw);
+            if (data.currentGuests && Array.isArray(data.currentGuests)) {
+                currentGuests = data.currentGuests;
+            } else {
+                currentGuests = [];
+            }
+            if (data.winners && typeof data.winners === 'object') {
+                winners = {
+                    top: data.winners.top || [],
+                    first: data.winners.first || [],
+                    second: data.winners.second || [],
+                    third: data.winners.third || [],
+                    luck: data.winners.luck || []
+                };
+            } else {
+                winners = { top: [], first: [], second: [], third: [], luck: [] };
+            }
+            return true;
+        } catch(e) {
+            console.warn("读取存储失败", e);
+            return false;
+        }
+    }
+
+    // 清除 localStorage 中的数据（重置时使用）
+    function clearLocalStorage() {
+        localStorage.removeItem(STORAGE_KEY);
+    }
+
+    // 渲染所有面板（不保存，只显示）
     function renderAll() {
         // 剩余宾客池（带删除按钮）
         if (currentGuests.length === 0) {
@@ -608,6 +656,12 @@
         }
     }
 
+    // 保存并刷新界面（所有修改状态的操作都调用此函数）
+    function persistAndRender() {
+        saveToLocalStorage();
+        renderAll();
+    }
+
     // 删除来宾
     function removeGuest(guestName) {
         if (isRolling) {
@@ -617,8 +671,7 @@
         const index = currentGuests.indexOf(guestName);
         if (index !== -1) {
             currentGuests.splice(index, 1);
-            renderAll();
-            // 如果删除后池子为空且没有抽奖动画，禁用抽奖按钮（已在 renderAll 中处理）
+            persistAndRender();
             return true;
         }
         return false;
@@ -638,12 +691,11 @@
             return false;
         }
         currentGuests.push(name);
-        renderAll();
-        // 如果有新宾客加入且抽奖按钮之前被禁用，恢复按钮状态（renderAll 会自动处理）
+        persistAndRender();
         return true;
     }
 
-    // 弹出自定义输入框（优雅美观）
+    // 弹出自定义输入框
     function showGuestInputDialog(title, callback) {
         const overlay = document.createElement('div');
         overlay.className = 'custom-prompt-overlay';
@@ -679,7 +731,7 @@
         input.focus();
     }
 
-    // 重置所有数据（清空宾客池和奖项）
+    // 重置所有数据（清空宾客池和奖项，并清除存储）
     function resetLottery() {
         if (isRolling) {
             if (rollInterval) clearInterval(rollInterval);
@@ -692,7 +744,9 @@
         pendingWinner = null;
         rollingNameDiv.innerHTML = '💖 幸福待启 💖';
         rollingNameDiv.classList.remove('winner-flash');
-        renderAll();
+        // 清除存储
+        clearLocalStorage();
+        persistAndRender();
         if (currentGuests.length === 0) {
             drawTopBtn.disabled = true;
             drawFirstBtn.disabled = true;
@@ -702,13 +756,14 @@
         }
     }
 
+    // 抽奖提交（中奖后更新数据）
     function commitDraw() {
         if (!pendingWinner || !pendingAward) return false;
         const idx = currentGuests.indexOf(pendingWinner);
         if (idx === -1) return false;
         currentGuests.splice(idx, 1);
         winners[pendingAward].push(pendingWinner);
-        renderAll();
+        persistAndRender();
         rollingNameDiv.innerHTML = `🎉 ${escapeHtml(pendingWinner)} 🎉`;
         rollingNameDiv.classList.add('winner-flash');
         setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 600);
@@ -731,7 +786,7 @@
         pendingWinner = null;
         pendingAward = null;
 
-        renderAll();
+        renderAll(); // 确保界面更新，但保存已在 commitDraw 中完成，这里不再重复保存
         if (currentGuests.length === 0 && !isRolling) {
             drawTopBtn.disabled = true;
             drawFirstBtn.disabled = true;
@@ -832,15 +887,33 @@
         }
     });
 
-    // 页面首次加载：弹出输入框，要求添加第一位来宾
-    function initialGuestInput() {
-        showGuestInputDialog("🎉 欢迎参加婚礼抽奖 🎉\n请输入您的姓名", (name) => {
-            if (name) {
-                addGuest(name);
-            } else {
-                alert("请点击「添加入场来宾」按钮添加姓名～");
+    // 页面初始化：先尝试从 localStorage 加载，如果无数据或数据为空则弹出输入框添加第一位来宾
+    function initialize() {
+        const hasData = loadFromLocalStorage();
+        if (hasData && (currentGuests.length > 0 || 
+            winners.top.length + winners.first.length + winners.second.length + winners.third.length + winners.luck.length > 0)) {
+            // 已有有效数据，直接渲染
+            renderAll();
+            // 如果候奖池为空，禁用抽奖按钮
+            if (currentGuests.length === 0) {
+                drawTopBtn.disabled = true;
+                drawFirstBtn.disabled = true;
+                drawSecondBtn.disabled = true;
+                drawThirdBtn.disabled = true;
+                drawLuckBtn.disabled = true;
             }
-        });
+        } else {
+            // 没有任何数据，清空状态并弹出输入框
+            resetLottery(); // 清空内存及存储
+            // 弹出输入框添加第一位来宾
+            showGuestInputDialog("🎉 欢迎参加婚礼抽奖 🎉\n请输入您的姓名", (name) => {
+                if (name) {
+                    addGuest(name);
+                } else {
+                    alert("请点击「添加入场来宾」按钮添加姓名～");
+                }
+            });
+        }
     }
 
     // 绑定事件
@@ -852,9 +925,8 @@
     addGuestBtn.addEventListener('click', onAddGuest);
     resetBtn.addEventListener('click', safeReset);
 
-    // 初始化
-    resetLottery();
-    initialGuestInput();
+    // 启动
+    initialize();
 </script>
 </body>
 </html>
