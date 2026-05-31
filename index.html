@@ -8,434 +8,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-
-        body {
-            min-height: 100vh;
-            background: linear-gradient(145deg, #fff5f7 0%, #ffe6ed 100%);
-            font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background-image: radial-gradient(circle at 20% 40%, rgba(255, 200, 210, 0.2) 2%, transparent 2.5%),
-                              radial-gradient(circle at 80% 70%, rgba(255, 180, 190, 0.2) 1.8%, transparent 2.2%);
-            background-size: 55px 55px, 70px 70px;
-            z-index: 0;
-        }
-
-        .wedding-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 248, 250, 0.85);
-            backdrop-filter: blur(3px);
-            border-radius: 68px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
-            overflow: hidden;
-            padding: 30px 25px 40px;
-            transition: all 0.3s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        .title-section {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-        }
-        .title-section h1 {
-            font-size: 2.6rem;
-            background: linear-gradient(135deg, #c44569, #e66767, #f5b0b0);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            font-weight: 700;
-        }
-        .sub {
-            font-size: 1.1rem;
-            color: #b45f6b;
-            background: rgba(255,240,243,0.7);
-            display: inline-block;
-            padding: 6px 20px;
-            border-radius: 60px;
-            margin-top: 12px;
-            backdrop-filter: blur(2px);
-            font-weight: 500;
-        }
-        .heart-icon {
-            display: inline-block;
-            animation: heartbeat 1.2s infinite ease;
-            margin: 0 6px;
-        }
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.18); }
-        }
-
-        .lottery-card {
-            background: #ffffffdd;
-            backdrop-filter: blur(12px);
-            border-radius: 60px;
-            padding: 20px 15px;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 35px -15px rgba(0, 0, 0, 0.1), 0 0 0 1px #ffe4eb inset;
-        }
-        .draw-area {
-            text-align: center;
-        }
-        .draw-name-box {
-            background: linear-gradient(145deg, #ffeff4, #ffe2ea);
-            border-radius: 70px;
-            padding: 25px 12px;
-            margin: 10px 20px;
-            box-shadow: 0 8px 20px rgba(196, 87, 112, 0.15);
-        }
-        .draw-label {
-            font-size: 1.2rem;
-            letter-spacing: 3px;
-            color: #c06a79;
-            font-weight: 500;
-            margin-bottom: 15px;
-        }
-        .rolling-name {
-            font-size: 3.3rem;
-            font-weight: 800;
-            background: linear-gradient(120deg, #b83b5e, #e76f8c);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            min-height: 130px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            word-break: break-word;
-            padding: 10px;
-            transition: 0.2s;
-            text-shadow: 0 2px 5px #ffcdd9;
-        }
-        @keyframes glowPulse {
-            0% { text-shadow: 0 0 0px #ffb6c1; }
-            100% { text-shadow: 0 0 18px #ff99aa; }
-        }
-        .winner-flash {
-            animation: glowPulse 0.3s ease-in-out 3;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin: 25px 0 10px;
-            flex-wrap: wrap;
-        }
-        .btn {
-            border: none;
-            padding: 10px 18px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: white;
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
-            font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-primary {
-            background: linear-gradient(95deg, #e66767, #d9536e);
-            color: white;
-            box-shadow: 0 8px 18px #e6676766;
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 14px 22px #e6676799;
-            background: linear-gradient(95deg, #f07a7a, #e9637e);
-        }
-        .btn-add {
-            background: linear-gradient(95deg, #5dade2, #2e86c1);
-            color: white;
-            box-shadow: 0 8px 18px #2e86c166;
-        }
-        .btn-add:hover:not(:disabled) {
-            transform: translateY(-2px);
-            background: linear-gradient(95deg, #6ea9e2, #3e96c1);
-        }
-        .btn-reset {
-            background: #ffecf0;
-            color: #b34e67;
-            border: 1px solid #ffcdda;
-        }
-        .btn-reset:hover:not(:disabled) {
-            background: #ffe2ea;
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            filter: grayscale(0.05);
-        }
-
-        .info-panels {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            margin-top: 20px;
-        }
-        .panel-left {
-            flex: 1.2;
-            min-width: 260px;
-            background: rgba(255, 250, 252, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 48px;
-            padding: 20px 18px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid #ffdce5;
-        }
-        .panel-right {
-            flex: 2.5;
-            min-width: 300px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .award-panel {
-            background: rgba(255, 250, 252, 0.85);
-            backdrop-filter: blur(4px);
-            border-radius: 48px;
-            padding: 12px 18px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            border: 1px solid #ffdce5;
-        }
-        .award-panel h3 {
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-            padding-left: 10px;
-            border-left: 5px solid;
-        }
-        .award-panel h3 span.badge {
-            background: #f7cad5;
-            border-radius: 40px;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            color: #a13e56;
-            margin-left: 6px;
-        }
-        .award-list {
-            max-height: 150px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        .winner-item {
-            background: linear-gradient(105deg, #fff0e7, #ffe3e8);
-            margin: 5px 0;
-            padding: 6px 12px;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #b1465f;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-left: 4px solid #f3a683;
-        }
-        .winner-item::before {
-            content: "🏆";
-            font-size: 0.9rem;
-        }
-        .guest-list {
-            max-height: 340px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        .guest-item {
-            background: #fff0f4;
-            margin: 8px 0;
-            padding: 10px 16px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #4b2d34;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            border: 1px solid #ffe2ea;
-        }
-        .guest-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .guest-name::before {
-            content: "💐";
-            font-size: 1rem;
-        }
-        .delete-guest-btn {
-            background: #ffe0e7;
-            border: none;
-            border-radius: 40px;
-            padding: 5px 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #b34e67;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .delete-guest-btn:hover {
-            background: #f5c2cf;
-            transform: scale(1.02);
-        }
-        .empty-tip {
-            color: #c593a0;
-            text-align: center;
-            padding: 15px;
-            font-style: italic;
-            font-size: 0.85rem;
-        }
-        .badge-count {
-            background: #f7cad5;
-            border-radius: 40px;
-            padding: 4px 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #a13e56;
-        }
-        .prize-show {
-            background: #feeef3;
-            border-radius: 50px;
-            margin-top: 35px;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            font-size: 0.85rem;
-            color: #b1586e;
-            font-weight: 500;
-        }
-        .prize-show span {
-            background: white;
-            padding: 5px 14px;
-            border-radius: 30px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        }
-        footer {
-            text-align: center;
-            margin-top: 35px;
-            font-size: 0.75rem;
-            color: #cd8b9b;
-        }
-        .sync-status {
-            display: inline-block;
-            margin-left: 12px;
-            font-size: 0.7rem;
-            background: #e9d0d7;
-            padding: 4px 12px;
-            border-radius: 40px;
-            color: #a13e56;
-        }
-        @media (max-width: 900px) {
-            .info-panels {
-                flex-direction: column;
-            }
-            .rolling-name {
-                font-size: 2rem;
-                min-height: 90px;
-            }
-            .btn {
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-            .title-section h1 {
-                font-size: 1.8rem;
-            }
-            .button-group {
-                gap: 8px;
-            }
-            .guest-item {
-                padding: 8px 12px;
-            }
-            .delete-guest-btn {
-                padding: 4px 10px;
-                font-size: 0.7rem;
-            }
-        }
-
-        .custom-prompt-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: inherit;
-        }
-        .custom-prompt-box {
-            background: #fff9fb;
-            border-radius: 48px;
-            padding: 28px 32px;
-            max-width: 420px;
-            width: 80%;
-            text-align: center;
-            box-shadow: 0 30px 40px rgba(0,0,0,0.2);
-            border: 1px solid #ffb7c5;
-        }
-        .custom-prompt-box h3 {
-            font-size: 1.6rem;
-            color: #bc6f80;
-            margin-bottom: 20px;
-        }
-        .custom-prompt-box input {
-            width: 100%;
-            padding: 14px 18px;
-            font-size: 1.1rem;
-            border-radius: 60px;
-            border: 1px solid #f5b0b0;
-            outline: none;
-            margin-bottom: 20px;
-            text-align: center;
-            font-family: inherit;
-        }
-        .custom-prompt-box button {
-            background: #e66767;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            font-size: 1rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .custom-prompt-box button:hover {
-            background: #d9536e;
-        }
+        /* 样式部分保持不变，已省略重复，实际您使用时请保留原有完整样式 */
+        *{margin:0;padding:0;box-sizing:border-box;user-select:none;}body{min-height:100vh;background:linear-gradient(145deg,#fff5f7 0,#ffe6ed 100%);font-family:'Segoe UI','Quicksand',system-ui,-apple-system,'PingFang SC','Microsoft YaHei','Helvetica Neue',sans-serif;padding:20px;position:relative;overflow-x:hidden;}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;background-image:radial-gradient(circle at 20% 40%,rgba(255,200,210,0.2) 2%,transparent 2.5%),radial-gradient(circle at 80% 70%,rgba(255,180,190,0.2) 1.8%,transparent 2.2%);background-size:55px 55px,70px 70px;z-index:0;}.wedding-container{max-width:1400px;margin:0 auto;background:rgba(255,248,250,0.85);backdrop-filter:blur(3px);border-radius:68px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25),0 0 0 1px rgba(255,255,255,0.6) inset;overflow:hidden;padding:30px 25px 40px;transition:all .3s ease;position:relative;z-index:2;}.title-section{text-align:center;margin-bottom:30px;position:relative;}.title-section h1{font-size:2.6rem;background:linear-gradient(135deg,#c44569,#e66767,#f5b0b0);background-clip:text;-webkit-background-clip:text;color:transparent;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,0.05);font-weight:700;}.sub{font-size:1.1rem;color:#b45f6b;background:rgba(255,240,243,0.7);display:inline-block;padding:6px 20px;border-radius:60px;margin-top:12px;backdrop-filter:blur(2px);font-weight:500;}.heart-icon{display:inline-block;animation:heartbeat 1.2s infinite ease;margin:0 6px;}@keyframes heartbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}.lottery-card{background:#ffffffdd;backdrop-filter:blur(12px);border-radius:60px;padding:20px 15px;margin-bottom:40px;box-shadow:0 20px 35px -15px rgba(0,0,0,0.1),0 0 0 1px #ffe4eb inset;}.draw-area{text-align:center;}.draw-name-box{background:linear-gradient(145deg,#ffeff4,#ffe2ea);border-radius:70px;padding:25px 12px;margin:10px 20px;box-shadow:0 8px 20px rgba(196,87,112,0.15);}.draw-label{font-size:1.2rem;letter-spacing:3px;color:#c06a79;font-weight:500;margin-bottom:15px;}.rolling-name{font-size:3.3rem;font-weight:800;background:linear-gradient(120deg,#b83b5e,#e76f8c);background-clip:text;-webkit-background-clip:text;color:transparent;min-height:130px;display:flex;align-items:center;justify-content:center;word-break:break-word;padding:10px;transition:.2s;text-shadow:0 2px 5px #ffcdd9;}@keyframes glowPulse{0%{text-shadow:0 0 0 #ffb6c1;}100%{text-shadow:0 0 18px #ff99aa;}}.winner-flash{animation:glowPulse 0.3s ease-in-out 3;}.button-group{display:flex;gap:12px;justify-content:center;margin:25px 0 10px;flex-wrap:wrap;}.btn{border:none;padding:10px 18px;font-size:.95rem;font-weight:600;border-radius:60px;cursor:pointer;transition:all .2s ease;background:#fff;box-shadow:0 5px 12px rgba(0,0,0,0.1);font-family:inherit;display:inline-flex;align-items:center;gap:6px;}.btn-primary{background:linear-gradient(95deg,#e66767,#d9536e);color:#fff;box-shadow:0 8px 18px #e6676766;}.btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 14px 22px #e6676799;background:linear-gradient(95deg,#f07a7a,#e9637e);}.btn-add{background:linear-gradient(95deg,#5dade2,#2e86c1);color:#fff;box-shadow:0 8px 18px #2e86c166;}.btn-add:hover:not(:disabled){transform:translateY(-2px);background:linear-gradient(95deg,#6ea9e2,#3e96c1);}.btn-reset{background:#ffecf0;color:#b34e67;border:1px solid #ffcdda;}.btn-reset:hover:not(:disabled){background:#ffe2ea;}.btn:disabled{opacity:0.5;cursor:not-allowed;filter:grayscale(0.05);}.info-panels{display:flex;flex-wrap:wrap;gap:25px;margin-top:20px;}.panel-left{flex:1.2;min-width:260px;background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:20px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.panel-right{flex:2.5;min-width:300px;display:flex;flex-direction:column;gap:16px;}.award-panel{background:rgba(255,250,252,0.85);backdrop-filter:blur(4px);border-radius:48px;padding:12px 18px;box-shadow:0 8px 20px rgba(0,0,0,0.05);border:1px solid #ffdce5;}.award-panel h3{font-size:1.2rem;display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-left:10px;border-left:5px solid;}.award-panel h3 span.badge{background:#f7cad5;border-radius:40px;padding:2px 8px;font-size:.75rem;color:#a13e56;margin-left:6px;}.award-list{max-height:150px;overflow-y:auto;padding-right:5px;}.winner-item{background:linear-gradient(105deg,#fff0e7,#ffe3e8);margin:5px 0;padding:6px 12px;border-radius:40px;font-size:.85rem;font-weight:500;color:#b1465f;display:flex;align-items:center;gap:8px;border-left:4px solid #f3a683;}.winner-item::before{content:"🏆";font-size:.9rem;}.guest-list{max-height:340px;overflow-y:auto;padding-right:5px;}.guest-item{background:#fff0f4;margin:8px 0;padding:10px 16px;border-radius:50px;font-size:1rem;font-weight:500;color:#4b2d34;display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #ffe2ea;}.guest-name{display:flex;align-items:center;gap:8px;}.guest-name::before{content:"💐";font-size:1rem;}.delete-guest-btn{background:#ffe0e7;border:none;border-radius:40px;padding:5px 12px;font-size:.75rem;font-weight:600;color:#b34e67;cursor:pointer;transition:all .2s;font-family:inherit;}.delete-guest-btn:hover{background:#f5c2cf;transform:scale(1.02);}.empty-tip{color:#c593a0;text-align:center;padding:15px;font-style:italic;font-size:.85rem;}.badge-count{background:#f7cad5;border-radius:40px;padding:4px 12px;font-size:.9rem;font-weight:600;color:#a13e56;}.prize-show{background:#feeef3;border-radius:50px;margin-top:35px;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:.85rem;color:#b1586e;font-weight:500;}.prize-show span{background:#fff;padding:5px 14px;border-radius:30px;box-shadow:0 2px 6px rgba(0,0,0,0.05);}footer{text-align:center;margin-top:35px;font-size:.75rem;color:#cd8b9b;}.sync-status{display:inline-block;margin-left:12px;font-size:.7rem;background:#e9d0d7;padding:4px 12px;border-radius:40px;color:#a13e56;}@media (max-width:900px){.info-panels{flex-direction:column;}.rolling-name{font-size:2rem;min-height:90px;}.btn{padding:6px 12px;font-size:.8rem;}.title-section h1{font-size:1.8rem;}.button-group{gap:8px;}.guest-item{padding:8px 12px;}.delete-guest-btn{padding:4px 10px;font-size:.7rem;}}.custom-prompt-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;font-family:inherit;}.custom-prompt-box{background:#fff9fb;border-radius:48px;padding:28px 32px;max-width:420px;width:80%;text-align:center;box-shadow:0 30px 40px rgba(0,0,0,0.2);border:1px solid #ffb7c5;}.custom-prompt-box h3{font-size:1.6rem;color:#bc6f80;margin-bottom:20px;}.custom-prompt-box input{width:100%;padding:14px 18px;font-size:1.1rem;border-radius:60px;border:1px solid #f5b0b0;outline:none;margin-bottom:20px;text-align:center;font-family:inherit;}.custom-prompt-box button{background:#e66767;color:#fff;border:none;padding:10px 25px;font-size:1rem;border-radius:40px;cursor:pointer;font-weight:bold;}.custom-prompt-box button:hover{background:#d9536e;}
     </style>
 </head>
 <body>
@@ -512,7 +86,7 @@
 </div>
 
 <script>
-    // ==================== Firebase 配置 (已替换为您的真实配置) ====================
+    // ==================== Firebase 配置 ====================
     const firebaseConfig = {
         apiKey: "AIzaSyCTD7c_G3mErpYUjlLDYNl1PJVj8TCV04g",
         authDomain: "myweddinglottery.firebaseapp.com",
@@ -527,9 +101,10 @@
     let database = null;
     let dbRef = null;
     let syncEnabled = false;
+    let isLocalUpdating = false;  // 防回环标志：本地主动更新时暂时忽略云端监听
 
     // 全局数据
-    let currentGuests = [];          // 未中奖池
+    let currentGuests = [];
     let winners = {
         top: [], first: [], second: [], third: [], luck: []
     };
@@ -565,20 +140,12 @@
     const luckCountSpan = document.getElementById('luckCount');
     const syncStatusTag = document.getElementById('syncStatusTag');
 
-    // 辅助函数
     function escapeHtml(str) {
         if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        });
+        return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;'));
     }
 
-    // 渲染全部UI
     function renderAll() {
-        // 候奖池渲染
         if (currentGuests.length === 0) {
             guestListContainer.innerHTML = '<div class="empty-tip">🌸 候奖池暂无来宾，请点击“添加入场来宾” 🌸</div>';
         } else {
@@ -591,7 +158,6 @@
         }
         remainCountSpan.innerText = currentGuests.length;
 
-        // 奖项渲染
         const renderAward = (listEl, arr, emptyMsg) => {
             if (arr.length === 0) listEl.innerHTML = `<div class="empty-tip">${emptyMsg}</div>`;
             else listEl.innerHTML = arr.map(w => `<div class="winner-item">🎉 ${escapeHtml(w)} 🎉</div>`).join('');
@@ -608,7 +174,6 @@
         thirdCountSpan.innerText = winners.third.length;
         luckCountSpan.innerText = winners.luck.length;
 
-        // 控制抽奖按钮可用性
         const hasGuests = currentGuests.length > 0;
         if (!isRolling) {
             drawTopBtn.disabled = !hasGuests;
@@ -625,24 +190,27 @@
         }
     }
 
-    // 将完整状态推送到Firebase
+    // 推送到云端（带防回环标志）
     function pushToCloud() {
         if (!syncEnabled || !dbRef) return;
+        isLocalUpdating = true;
         const fullData = { currentGuests, winners };
-        dbRef.set(fullData).catch(err => {
+        dbRef.set(fullData).then(() => {
+            // 成功后可延迟重置标志，避免短时间内再次触发
+            setTimeout(() => { isLocalUpdating = false; }, 500);
+        }).catch(err => {
             console.warn("云端写入失败", err);
             syncStatusTag.innerText = "⚠️ 同步异常";
+            isLocalUpdating = false;
             setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000);
         });
     }
 
-    // 中断当前抽奖动画 (当远程数据更新时)
+    // 中断抽奖动画
     function abortRollingIfNeeded(reason = "云端数据更新") {
         if (isRolling) {
-            if (rollInterval) {
-                clearInterval(rollInterval);
-                rollInterval = null;
-            }
+            if (rollInterval) clearInterval(rollInterval);
+            rollInterval = null;
             isRolling = false;
             rollingNameDiv.innerHTML = `🔄 ${reason}，抽奖已取消，请重新抽取 🔄`;
             setTimeout(() => {
@@ -656,10 +224,11 @@
         }
     }
 
-    // 监听云端变化
+    // 监听云端变化（增加防回环）
     function startCloudSync() {
         if (!dbRef) return;
         dbRef.on('value', (snapshot) => {
+            if (isLocalUpdating) return; // 本地主动推送中，忽略本次回写
             const cloudData = snapshot.val();
             if (!cloudData) {
                 if (currentGuests.length === 0 && Object.values(winners).every(arr => arr.length === 0)) {
@@ -698,7 +267,7 @@
         });
     }
 
-    // 通用修改数据：更新内存+渲染+推云，但会检查 isRolling
+    // 通用数据修改（非抽奖提交使用）
     function applyDataChange(updateFn) {
         if (isRolling) {
             alert("抽奖进行中，请稍后操作～");
@@ -710,7 +279,7 @@
         return true;
     }
 
-    // 本地操作函数 (不涉及云端推送)
+    // 本地操作函数
     function addGuestLocal(name) {
         if (!name || name.trim() === "") return false;
         const trimmed = name.trim();
@@ -745,7 +314,6 @@
         return true;
     }
 
-    // UI 操作入口
     function addGuestUI(name) {
         applyDataChange(() => addGuestLocal(name));
     }
@@ -754,14 +322,31 @@
         applyDataChange(() => removeGuestLocal(guestName));
     }
 
+    // 重置：清除所有数据并强制同步到云端（不受防回环干扰）
     function resetAllUI() {
         if (isRolling) {
             if (rollInterval) clearInterval(rollInterval);
+            rollInterval = null;
             isRolling = false;
         }
-        applyDataChange(() => resetLotteryLocal());
+        // 清空本地数据
+        currentGuests = [];
+        winners = { top: [], first: [], second: [], third: [], luck: [] };
+        renderAll();
         rollingNameDiv.innerHTML = "🔄 已重置所有奖项 & 清空候奖池 🔄";
         setTimeout(() => { if(!isRolling) rollingNameDiv.innerHTML = "💖 点击抽取 💖"; }, 1500);
+        // 强制推送到云端（绕过 applyDataChange 以避免标志问题，且保证云端被覆盖）
+        if (syncEnabled && dbRef) {
+            isLocalUpdating = true;
+            dbRef.set({ currentGuests, winners })
+                .then(() => setTimeout(() => { isLocalUpdating = false; }, 500))
+                .catch(err => {
+                    console.error("重置同步失败", err);
+                    syncStatusTag.innerText = "⚠️ 重置同步失败，请重试";
+                    isLocalUpdating = false;
+                    setTimeout(() => { if(syncEnabled) syncStatusTag.innerText = "☁️ 云端同步"; }, 2000);
+                });
+        }
     }
 
     // 抽奖动画 + 提交 (修复版)
@@ -781,7 +366,7 @@
         pendingWinner = finalWinner;
         isRolling = true;
         rollCount = 0;
-        renderAll(); // 禁用按钮
+        renderAll();
 
         if (rollInterval) clearInterval(rollInterval);
         rollInterval = setInterval(() => {
@@ -806,16 +391,15 @@
             if (rollCount >= MAX_ROLL_FRAMES) {
                 clearInterval(rollInterval);
                 rollInterval = null;
-                // 关键修复：先关闭抽奖标志，再提交，避免被 applyDataChange 拦截
+                // 结束抽奖标志
                 isRolling = false;
                 let commitSuccess = false;
                 if (pendingWinner && pendingAward && currentGuests.includes(pendingWinner)) {
-                    // 直接执行本地提交，不经过 applyDataChange 的 isRolling 检查
                     const localSuccess = commitDrawLocal(pendingWinner, pendingAward);
                     if (localSuccess) {
                         commitSuccess = true;
-                        renderAll();               // 更新界面
-                        if (syncEnabled) pushToCloud(); // 同步到云端
+                        renderAll();
+                        if (syncEnabled) pushToCloud();
                         rollingNameDiv.innerHTML = `🎉 ${escapeHtml(pendingWinner)} 🎉`;
                         rollingNameDiv.classList.add('winner-flash');
                         setTimeout(() => rollingNameDiv.classList.remove('winner-flash'), 600);
@@ -827,10 +411,8 @@
                 } else {
                     rollingNameDiv.innerHTML = '🕊️ 抽奖失败，请重新抽取 🕊️';
                 }
-                // 清理暂存
                 pendingWinner = null;
                 pendingAward = null;
-                // 如果提交失败，需要确保按钮状态正确（renderAll 可能已在上面调用过，但再调用一次确保）
                 if (!commitSuccess) {
                     renderAll();
                 }
@@ -841,7 +423,6 @@
         }, 70);
     }
 
-    // 初始化 Firebase
     function initFirebase() {
         if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("DummyKey")) {
             syncStatusTag.innerText = "⚠️ 未配置Firebase";
@@ -918,7 +499,6 @@
     });
     resetBtn.addEventListener('click', () => { if (confirm("⚠️ 重置将清空所有奖项和候奖池，且会同步到所有设备，确定吗？")) resetAllUI(); });
 
-    // 启动
     initFirebase();
 </script>
 </body>
